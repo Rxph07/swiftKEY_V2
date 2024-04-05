@@ -5,13 +5,486 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:swiftKEY_V2"
         mc:Ignorable="d"
-        Title="swiftKEY" Height="450" Width="800">
+        Title="swiftKEY" Height="600" Width="1000"
+        FontSize="16" FontWeight="DemiBold"
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
-    <StackPanel Margin="20">
-        <ComboBox x:Name="cb_COMPorts" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" ItemsSource="{Binding COMPorts}"
-                  Text="COM-Port wählen" SelectedIndex="-1"
-                  SelectionChanged="cb_COMPorts_SelectionChanged"
-                  DropDownOpened="cb_COMPorts_DropDownOpened">
-        </ComboBox>
-    </StackPanel>
+    <Window.Resources>
+        <!-- Custom Colors -->
+        <Color x:Key="custom_darkgray">#1C1C1C</Color>
+        <Color x:Key="custom_gray">#2C2C2C</Color>
+        <Color x:Key="custom_lightgray_1">#3C3C3C</Color>
+        <Color x:Key="custom_lightgray_2">#4C4C4C</Color>
+        <Color x:Key="custom_lightgray_3">#6D6D6D</Color>
+        <Color x:Key="custom_gray_text">#707070</Color>
+
+        <SolidColorBrush x:Key="custom_darkgray_brush" Color="{StaticResource custom_darkgray}"/>
+        <SolidColorBrush x:Key="custom_gray_brush" Color="{StaticResource custom_gray}"/>
+        <SolidColorBrush x:Key="custom_lightgray_1_brush" Color="{StaticResource custom_lightgray_1}"/>
+        <SolidColorBrush x:Key="custom_lightgray_2_brush" Color="{StaticResource custom_lightgray_2}"/>
+        <SolidColorBrush x:Key="custom_lightgray_3_brush" Color="{StaticResource custom_lightgray_3}"/>
+        <SolidColorBrush x:Key="custom_gray_text_brush" Color="{StaticResource custom_gray_text}"/>
+
+        <!-- Search Box Style -->
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <!-- Border for rounded corners -->
+                            <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+                                <ScrollViewer x:Name="PART_ContentHost"/>
+                            </Border>
+
+                            <!-- Placeholder text -->
+                            <TextBlock x:Name="PlaceholderText" Text="Suchen" 
+                                   Foreground="{StaticResource custom_gray_text_brush}" VerticalAlignment="Center" 
+                                   Margin="30,0,0,0" Visibility="Collapsed"/>
+
+                            <!-- Magnifying glass icon -->
+                            <Image Source="img/Search.png" Width="15" Height="15"
+                               VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <!-- Show placeholder text when TextBox is empty and not focused -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value=""/>
+                                    <Condition Property="IsKeyboardFocused" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- #region CustomComboBox -->
+        <!-- ComboBox DropDown Style -->
+        <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="{StaticResource custom_lightgray_1_brush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!-- Custom ComboBox Style -->
+        <SolidColorBrush x:Key="ComboBox.Static.Background" Color="{StaticResource custom_lightgray_1}"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Border" Color="Transparent"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="{StaticResource custom_gray_text}"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Background" Color="{StaticResource custom_lightgray_2}"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Border" Color="Transparent"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Glyph" Color="{StaticResource custom_gray_text}"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Background" Color="{StaticResource custom_lightgray_2}"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Border" Color="Transparent"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Glyph" Color="{StaticResource custom_gray_text}"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Background" Color="{StaticResource custom_lightgray_3}"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Border" Color="Transparent"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Glyph" Color="{StaticResource custom_gray_text}"/>
+
+        <!-- ComboBox Toggle Button Style -->
+        <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="ClickMode" Value="Press"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <!-- arrow icon + transition -->
+                        <Border x:Name="templateRoot" Background="{StaticResource ComboBox.Static.Background}" BorderBrush="{StaticResource ComboBox.Static.Border}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <Border x:Name="splitBorder" BorderBrush="Transparent" BorderThickness="1" Margin="170,0,0,0" SnapsToDevicePixels="true" Width="30" HorizontalAlignment="Left">
+                                <Path x:Name="arrow" Width="15" Height="10" Fill="{StaticResource ComboBox.Static.Glyph}" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M0,0 L4,4 L8,0 Z" Stretch="Fill">
+                                    <Path.RenderTransformOrigin>
+                                        <Point X="0.5" Y="0.5"/>
+                                    </Path.RenderTransformOrigin>
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="RenderTransform">
+                                                <Setter.Value>
+                                                    <RotateTransform Angle="0"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="True">
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle" To="180" Duration="0:0:0.1"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.EnterActions>
+                                                    <DataTrigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle" To="0" Duration="0:0:0.1"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                            </Border>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Background}"/>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.Pressed.Glyph}"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Background}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.Disabled.Glyph}"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="false"/>
+                                </MultiDataTrigger.Conditions>
+                            </MultiDataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- basic control template -->
+        <ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
+            <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- textblock for place holder text -->
+                <TextBlock x:Name="placeHolderTextBlock"
+                           Text="COM-Port wählen"
+                           Visibility="Collapsed"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="{StaticResource custom_gray_text_brush}"
+                           Margin="5, 0, 5, 0"
+                           Grid.ColumnSpan="2"
+                           IsHitTestVisible="False"
+                           Panel.ZIndex="1"/>
+
+                <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" Margin="1" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                    <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                        <Border x:Name="dropDownBorder" Background="{StaticResource custom_lightgray_1_brush}" BorderBrush="{StaticResource custom_gray_text_brush}" BorderThickness="0, 1, 0, 0">
+                            <ScrollViewer x:Name="DropDownScrollViewer">
+                                <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                    <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                        <Rectangle x:Name="opaqueRect" Fill="{StaticResource custom_darkgray_brush}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                    </Canvas>
+                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+                    </theme:SystemDropShadowChrome>
+                </Popup>
+                <ToggleButton x:Name="toggleButton" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
+                <ContentPresenter x:Name="contentPresenter" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <!-- show only when no item is selected -->
+                <Trigger Property="SelectedIndex" Value="-1">
+                    <Setter Property="Visibility" TargetName="placeHolderTextBlock" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                    <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
+                    <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
+                </Trigger>
+                <Trigger Property="HasItems" Value="false">
+                    <Setter Property="Height" TargetName="dropDownBorder" Value="Auto"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="true"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                </MultiTrigger>
+                <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                    <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                    <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Custom ComboBox Style -->
+        <Style x:Key="Custom_ComboBoxStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="Background" Value="{StaticResource ComboBox.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ComboBox.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Padding" Value="6,3,5,3"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template" Value="{StaticResource ComboBoxTemplate}"/>
+            <Style.Triggers>
+                <Trigger Property="IsEditable" Value="true">
+                    <Setter Property="IsTabStop" Value="false"/>
+                    <Setter Property="Padding" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- #endregion -->
+    </Window.Resources>
+
+    <Window.Background>
+        <SolidColorBrush Color="{StaticResource custom_gray}"/>
+    </Window.Background>
+
+    <Grid Margin="20">
+        <!-- Aufteilung in linke und rechte Seiten -->
+        <Grid.ColumnDefinitions>
+            <!-- 80% Platz -->
+            <ColumnDefinition Width="4*"/>
+            <!-- 20% Platz -->
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Linke Seite -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <!-- Platz für die ComboBox -->
+                <RowDefinition Height="Auto"/>
+                <!-- Platz für das Label -->
+                <RowDefinition Height="Auto"/>
+                <!-- Platz für das Grid -->
+                <RowDefinition Height="*"/>
+                <!-- Platz für den Button -->
+                <RowDefinition Height="Auto"/>
+                <!-- Platz für das untere Label -->
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- ComboBox -->
+            <ComboBox Style="{DynamicResource Custom_ComboBoxStyle}"
+                      x:Name="cb_COMPorts"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Width="200" Height="30"
+                      ItemsSource="{Binding COMPorts}"
+                      ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
+                      SelectedIndex="-1"
+                      SelectionChanged="cb_COMPorts_SelectionChanged"
+                      DropDownOpened="cb_COMPorts_DropDownOpened"
+                      Foreground="{StaticResource custom_gray_text_brush}">
+            </ComboBox>
+
+            <!-- Grid -->
+            <Grid Grid.Row="2" Margin="50, 25, 50, 25">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <!--#region Buttons -->
+                <!-- Button1 -->
+                <Border Grid.Row="0" Grid.Column="0" x:Name="cell1" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText1" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button2 -->
+                <Border Grid.Row="0" Grid.Column="1" x:Name="cell2" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText2" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button3 -->
+                <Border Grid.Row="0" Grid.Column="2" x:Name="cell3" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText3" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button4 -->
+                <Border Grid.Row="0" Grid.Column="3" x:Name="cell4" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText4" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button5 -->
+                <Border Grid.Row="0" Grid.Column="4" x:Name="cell5" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText5" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button6 -->
+                <Border Grid.Row="1" Grid.Column="0" x:Name="cell6" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText6" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button7 -->
+                <Border Grid.Row="1" Grid.Column="1" x:Name="cell7" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText7" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button8 -->
+                <Border Grid.Row="1" Grid.Column="2" x:Name="cell8" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText8" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button9 -->
+                <Border Grid.Row="1" Grid.Column="3" x:Name="cell9" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText9" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button10 -->
+                <Border Grid.Row="1" Grid.Column="4" x:Name="cell10" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText10" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button11 -->
+                <Border Grid.Row="3" Grid.Column="0" x:Name="cell11" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText11" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button12 -->
+                <Border Grid.Row="2" Grid.Column="1" x:Name="cell12" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText12" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button13 -->
+                <Border Grid.Row="2" Grid.Column="2" x:Name="cell13" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText13" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button14 -->
+                <Border Grid.Row="2" Grid.Column="3" x:Name="cell14" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText14" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Button15 -->
+                <Border Grid.Row="2" Grid.Column="4" x:Name="cell15" Margin="20"
+                        AllowDrop="True" Drop="OnDrop" MouseDown="OpenContextMenu"
+                        CornerRadius="5" BorderThickness="4" BorderBrush="{StaticResource custom_lightgray_3_brush}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource custom_darkgray_brush}">
+                    <TextBlock x:Name="cellText15" Background="Transparent" Foreground="White" Padding="5"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                </Border>
+                <!--#endregion-->
+            </Grid>
+            <Label x:Name="lbl_version" Content="Version" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource custom_gray_text_brush}" FontSize="16" FontWeight="Bold"/>
+        </Grid>
+
+        <!-- Rechte Seite -->
+        <Grid Grid.Column="1">
+            <StackPanel>
+                <!-- Search Box -->
+                <TextBox x:Name="tb_searchBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10"
+                         TextChanged="SearchBox_TextChanged" Background="{StaticResource custom_lightgray_1_brush}"
+                         Style="{StaticResource RoundedTextBoxStyle}" BorderThickness="0" Padding="30,0,0,0"
+                         Foreground="{StaticResource custom_gray_text_brush}" Height="25" VerticalContentAlignment="Center"/>
+
+                <!-- Expander with List -->
+                <Expander Header="Hotkey wählen" x:Name="expander1" Margin="10" VerticalAlignment="Top" ExpandDirection="Down"
+                          IsExpanded="False" Foreground="{StaticResource custom_gray_text_brush}" Background="{StaticResource custom_lightgray_1_brush}"
+                          FontSize="14">
+                    <StackPanel x:Name="stackPanel1">
+                        <TextBlock Text="Apple" Visibility="Visible" MouseDown="OnDragStart"/>
+                        <TextBlock Text="Banana" Visibility="Visible" MouseDown="OnDragStart"/>
+                    </StackPanel>
+                </Expander>
+
+                <Expander Header="List 2" x:Name="expander2" Margin="10" VerticalAlignment="Top" ExpandDirection="Down" IsExpanded="False">
+                    <StackPanel x:Name="stackPanel2">
+                        <TextBlock Text="Elephant" Visibility="Visible" MouseDown="OnDragStart"/>
+                        <TextBlock Text="Tiger" Visibility="Visible" MouseDown="OnDragStart"/>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
 </Window>

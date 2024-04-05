@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using NAudio.CoreAudioApi;
 using System.Diagnostics;
 using WindowsInput;
+using System.Collections.Generic;
 
 namespace swiftKEY_V2
 {

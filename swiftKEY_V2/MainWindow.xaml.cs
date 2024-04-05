@@ -23,8 +23,6 @@ namespace swiftKEY_V2
 
             config = ConfigManager.LoadConfig();    // Load config
             //LoadButtonFunctions();                // Display config functions (TODO)
-
-            UpdateCOMPorts();
         }
 
         #region COM-PORTS & DATAHANDLER

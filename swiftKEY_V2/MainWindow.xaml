@@ -11,6 +11,7 @@
         <ComboBox x:Name="cb_COMPorts" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" ItemsSource="{Binding COMPorts}"
                   Text="COM-Port wählen" SelectedIndex="-1"
                   SelectionChanged="cb_COMPorts_SelectionChanged"
-                  DropDownOpened="cb_COMPorts_DropDownOpened"/>
+                  DropDownOpened="cb_COMPorts_DropDownOpened">
+        </ComboBox>
     </StackPanel>
 </Window>

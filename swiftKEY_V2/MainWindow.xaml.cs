@@ -18,7 +18,7 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.0.0.0";
+        private const string version = "swiftKEY 2.1.0.0";
 
         public MainWindow()
         {
@@ -174,30 +174,37 @@ namespace swiftKEY_V2
         {
             string searchText = tb_searchBox.Text.ToLower();
 
-            foreach (TextBlock textBlock in stackPanel1.Children)
+            // Durchsuche List 1
+            foreach (StackPanel stackPanel in stackPanel1.Children)
             {
-                if (textBlock.Text.ToLower().Contains(searchText))
+                foreach (TextBlock textBlock in stackPanel.Children)
                 {
-                    textBlock.Visibility = Visibility.Visible;
-                    expander1.IsExpanded = true; // Expand the expander if there's a match
-                }
-                else
-                {
-                    textBlock.Visibility = Visibility.Collapsed;
+                    if (textBlock.Text.ToLower().Contains(searchText))
+                    {
+                        stackPanel.Visibility = Visibility.Visible;
+                        expander1.IsExpanded = true; // Expand the expander if there's a match
+                    }
+                    else
+                    {
+                        stackPanel.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
 
-            // Filter List 2
-            foreach (TextBlock textBlock in stackPanel2.Children)
+            // Durchsuche List 2
+            foreach (StackPanel stackPanel in stackPanel2.Children)
             {
-                if (textBlock.Text.ToLower().Contains(searchText))
+                foreach (TextBlock textBlock in stackPanel.Children)
                 {
-                    textBlock.Visibility = Visibility.Visible;
-                    expander2.IsExpanded = true; // Expand the expander if there's a match
-                }
-                else
-                {
-                    textBlock.Visibility = Visibility.Collapsed;
+                    if (textBlock.Text.ToLower().Contains(searchText))
+                    {
+                        stackPanel.Visibility = Visibility.Visible;
+                        expander2.IsExpanded = true; // Expand the expander if there's a match
+                    }
+                    else
+                    {
+                        stackPanel.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
 
@@ -207,8 +214,6 @@ namespace swiftKEY_V2
                 expander2.IsExpanded = false;
             }
         }
-
-
         #endregion
 
         #region PopUpMenuHandler

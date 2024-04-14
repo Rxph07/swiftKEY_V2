@@ -5,15 +5,22 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
+using NAudio.CoreAudioApi;
+using System.Collections;
+using System.Windows.Media.Animation;
 using System.Windows.Controls.Primitives;
 
 namespace swiftKEY_V2
 {
-    /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
-    /// </summary>
+    public class FunctionDictionary
+    {
+        public string Name { get; set; }
+        public string Function { get; set; }
+    }
+
     public partial class MainWindow : Window
     {
+        public List<FunctionDictionary> dictionary = new List<FunctionDictionary>();
         public List<string> COMPorts { get; set; } = new List<string>();
         public static int buttonAmount = 15;
         private ButtonConfig config;
@@ -27,26 +34,37 @@ namespace swiftKEY_V2
 
             config = ConfigManager.LoadConfig();    // Load config
             LoadData();                             // Load Data
+
+            Test testWindow = new Test();
+            testWindow.ShowDialog();
         }
 
         private void LoadData()
         {
+            dictionary = new List<FunctionDictionary>
+            {
+                new FunctionDictionary { Name = "Hotkey", Function = "hotkey" },
+                new FunctionDictionary { Name = "Lautstärke erhöhen", Function = "volumeup" },
+                new FunctionDictionary { Name = "Lautstärke verringern", Function = "volumedown" },
+                new FunctionDictionary { Name = "Lautstärke stummschalten", Function = "volumemute" }
+            };
+
             lbl_version.Content = version;
-            cellText1.Text = config.ButtonFunctions["Button1"];
-            cellText2.Text = config.ButtonFunctions["Button2"];
-            cellText3.Text = config.ButtonFunctions["Button3"];
-            cellText4.Text = config.ButtonFunctions["Button4"];
-            cellText5.Text = config.ButtonFunctions["Button5"];
-            cellText6.Text = config.ButtonFunctions["Button6"];
-            cellText7.Text = config.ButtonFunctions["Button7"];
-            cellText8.Text = config.ButtonFunctions["Button8"];
-            cellText9.Text = config.ButtonFunctions["Button9"];
-            cellText10.Text = config.ButtonFunctions["Button10"];
-            cellText11.Text = config.ButtonFunctions["Button11"];
-            cellText12.Text = config.ButtonFunctions["Button12"];
-            cellText13.Text = config.ButtonFunctions["Button13"];
-            cellText14.Text = config.ButtonFunctions["Button14"];
-            cellText15.Text = config.ButtonFunctions["Button15"];
+            cellText1.Text = config.ButtonConfigurations[0].Name;
+            cellText2.Text = config.ButtonConfigurations[1].Name;
+            cellText3.Text = config.ButtonConfigurations[2].Name;
+            cellText4.Text = config.ButtonConfigurations[3].Name;
+            cellText5.Text = config.ButtonConfigurations[4].Name;
+            cellText6.Text = config.ButtonConfigurations[5].Name;
+            cellText7.Text = config.ButtonConfigurations[6].Name;
+            cellText8.Text = config.ButtonConfigurations[7].Name;
+            cellText9.Text = config.ButtonConfigurations[8].Name;
+            cellText10.Text = config.ButtonConfigurations[9].Name;
+            cellText11.Text = config.ButtonConfigurations[10].Name;
+            cellText12.Text = config.ButtonConfigurations[11].Name;
+            cellText13.Text = config.ButtonConfigurations[12].Name;
+            cellText14.Text = config.ButtonConfigurations[13].Name;
+            cellText15.Text = config.ButtonConfigurations[14].Name;
         }
 
         #region COM-PORTS & DATAHANDLER
@@ -128,7 +146,8 @@ namespace swiftKEY_V2
             {
                 if (data.Equals("SmartPAD_key" + i + "_pressed\r"))
                 {
-                    EventHandler.FetchFunction(config.ButtonFunctions["Button" + i]);
+                    config = ConfigManager.LoadConfig();
+                    EventHandler.FetchFunction(config.ButtonConfigurations[i-1].Function);
                 }
             }
         }
@@ -142,18 +161,28 @@ namespace swiftKEY_V2
             {
                 int row = Grid.GetRow((UIElement)sender);
                 int column = Grid.GetColumn((UIElement)sender);
-                string btnName = "Button";
+                int btn;
 
                 if (row == 0)
-                    btnName += $"{column+1}";
+                    btn = column;
                 else if (row == 1)
-                    btnName += $"{column+6}";
+                    btn = column + 5;
                 else
-                    btnName += $"{column+11}";
+                    btn = column + 10;
 
-                ((TextBlock) ((Border) sender).Child).Text = droppedText;
+                ((TextBlock)((Border)sender).Child).Text = droppedText;
                 ((TextBlock) ((Border) sender).Child).Visibility = Visibility.Visible;
-                config.ButtonFunctions[btnName] = droppedText;
+                config.ButtonConfigurations[btn].Name = droppedText;
+                config.ButtonConfigurations[btn].Title = droppedText;
+
+                foreach (var item in dictionary)
+                {
+                    if (item.Name == droppedText)
+                    {
+                        config.ButtonConfigurations[btn].Function = item.Function;
+                    }
+                }
+
                 ConfigManager.SaveConfig(config);
             }
         }
@@ -169,7 +198,6 @@ namespace swiftKEY_V2
                 }
             }
         }
-
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string searchText = tb_searchBox.Text.ToLower();
@@ -216,10 +244,24 @@ namespace swiftKEY_V2
         }
         #endregion
 
-        #region PopUpMenuHandler
+        #region ModalHandler
         private void OpenContextMenu(object sender, MouseButtonEventArgs e)
         {
-            // TODO IN FUTURE
+            Border border = sender as Border;
+            if (border == null)
+                return;
+
+            TextBlock textBlock = border.Child as TextBlock;
+            if (textBlock == null)
+                return;
+
+            int btnIndex = int.Parse(border.Name.Substring(4)) - 1;
+
+            if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "hotkey")
+            {
+                HotkeySettingsWindow hotkeySettingsWindow = new HotkeySettingsWindow(btnIndex);
+                hotkeySettingsWindow.ShowDialog();
+            }
         }
         #endregion
     }

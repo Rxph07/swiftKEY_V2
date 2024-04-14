@@ -4,6 +4,11 @@ using NAudio.CoreAudioApi;
 using System.Diagnostics;
 using WindowsInput;
 using System.Collections.Generic;
+using System.Windows;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using WindowsInput.Native;
+using System.Windows.Media.Animation;
+using System.Windows.Input;
 
 namespace swiftKEY_V2
 {
@@ -24,7 +29,16 @@ namespace swiftKEY_V2
         {
             if (data.Contains("hotkey_"))
             {
-                PressKey(data.Replace("hotkey_", ""));
+                string[] splitData = data.Split('_');
+                if (int.Parse(splitData[1]) != -1)
+                {
+                    simulator.Keyboard.ModifiedKeyStroke((VirtualKeyCode) int.Parse(splitData[1]), (VirtualKeyCode) int.Parse(splitData[2]));
+                }
+                else
+                {
+                    VirtualKeyCode key = (VirtualKeyCode) int.Parse(splitData[2]);
+                    simulator.Keyboard.KeyPress(key);
+                }
             }
             else if (data.Equals("volumeup"))
             {
@@ -59,10 +73,10 @@ namespace swiftKEY_V2
             }
         }
 
-        private static void PressKey(string keys)
+        private static void PressKey(int keyCode)
         {
-            keys = keys.ToLower();
-            simulator.Keyboard.TextEntry(keys);
+            VirtualKeyCode key = (VirtualKeyCode) keyCode;
+            simulator.Keyboard.KeyPress(key);
         }
 
         private static void OpenProgram(string name)

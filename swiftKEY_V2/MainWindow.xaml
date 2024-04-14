@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="swiftKEY" Height="600" Width="1000"
         FontSize="16" FontWeight="DemiBold"
-    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
     <Window.Resources>
         <!-- Custom Colors -->
@@ -64,7 +64,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
         <!--#region Custom Expander -->
         <!-- Expander Toggle Button Style -->
         <Style x:Key="ExpanderDownHeaderStyle" TargetType="{x:Type ToggleButton}">
@@ -268,7 +267,6 @@
         </Style>
 
         <!--#endregion-->
-
         <!-- #region CustomComboBox -->
         <!-- ComboBox DropDown Style -->
         <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
@@ -677,11 +675,11 @@
                     <StackPanel x:Name="stackPanel1" Style="{StaticResource CustomExpanderStackPanelStyle}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="hotkey_a" Visibility="Visible" MouseDown="OnDragStart"/>
+                            <TextBlock Text="Hotkey" Visibility="Visible" MouseDown="OnDragStart"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="hotkey_b" Visibility="Visible" MouseDown="OnDragStart"/>
+                            <TextBlock Text="Lautstärke erhöhen" Visibility="Visible" MouseDown="OnDragStart"/>
                         </StackPanel>
                     </StackPanel>
                 </Expander>

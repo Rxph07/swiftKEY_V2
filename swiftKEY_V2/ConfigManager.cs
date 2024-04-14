@@ -28,11 +28,15 @@ namespace swiftKEY_V2
 
         private static void CreateConfig()
         {
-            // Standardkonfigurationen erstellen
             var defaultConfig = new ButtonConfig();
             for (int i = 1; i <= MainWindow.buttonAmount; i++)
             {
-                defaultConfig.ButtonFunctions["Button" + i] = "";
+                defaultConfig.ButtonConfigurations.Add(new ButtonConfiguration
+                {
+                    Title = "Button" + i,
+                    Name = "",
+                    Function = ""
+                });
             }
             SaveConfig(defaultConfig);
         }
@@ -40,6 +44,13 @@ namespace swiftKEY_V2
 
     public class ButtonConfig
     {
-        public Dictionary<string, string> ButtonFunctions { get; set; } = new Dictionary<string, string>();
+        public List<ButtonConfiguration> ButtonConfigurations { get; set; } = new List<ButtonConfiguration>();
+    }
+
+    public class ButtonConfiguration
+    {
+        public string Title { get; set; }
+        public string Name { get; set; }
+        public string Function { get; set; }
     }
 }

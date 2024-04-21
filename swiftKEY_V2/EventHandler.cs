@@ -19,7 +19,13 @@ namespace swiftKEY_V2
         private static MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
         // Keyboard
-        private static InputSimulator simulator = new InputSimulator();
+        //private static InputSimulator simulator = new InputSimulator();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+        private const uint KEYEVENTF_KEYDOWN = 0x0001; // Keydown-Flag
+        private const uint KEYEVENTF_KEYUP = 0x0002; // Keyup-Flag
 
         // Lock
         [DllImport("user32.dll", SetLastError = true)]
@@ -30,14 +36,49 @@ namespace swiftKEY_V2
             if (data.Contains("hotkey_"))
             {
                 string[] splitData = data.Split('_');
-                if (int.Parse(splitData[1]) != -1)
+                if(splitData.Length == 2)
                 {
-                    simulator.Keyboard.ModifiedKeyStroke((VirtualKeyCode) int.Parse(splitData[1]), (VirtualKeyCode) int.Parse(splitData[2]));
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
                 }
-                else
+                else if(splitData.Length == 3) {
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                }
+                else if (splitData.Length == 4)
                 {
-                    VirtualKeyCode key = (VirtualKeyCode) int.Parse(splitData[2]);
-                    simulator.Keyboard.KeyPress(key);
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[3]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[3]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                }
+                else if (splitData.Length == 5)
+                {
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[3]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[4]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[3]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[4]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                }
+                else if (splitData.Length == 6)
+                {
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[3]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[4]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[5]), 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[1]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[2]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[3]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[4]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event((byte)int.Parse(splitData[5]), 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
                 }
             }
             else if (data.Equals("volumeup"))
@@ -76,7 +117,7 @@ namespace swiftKEY_V2
         private static void PressKey(int keyCode)
         {
             VirtualKeyCode key = (VirtualKeyCode) keyCode;
-            simulator.Keyboard.KeyPress(key);
+            //simulator.Keyboard.KeyPress(key);
         }
 
         private static void OpenProgram(string name)

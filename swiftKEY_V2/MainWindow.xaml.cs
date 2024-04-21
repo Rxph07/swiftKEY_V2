@@ -5,10 +5,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
-using NAudio.CoreAudioApi;
-using System.Collections;
-using System.Windows.Media.Animation;
-using System.Windows.Controls.Primitives;
 
 namespace swiftKEY_V2
 {
@@ -25,7 +21,7 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.0.1.0";
+        private const string version = "swiftKEY 2.0.1.1";
 
         public MainWindow()
         {
@@ -34,9 +30,6 @@ namespace swiftKEY_V2
 
             config = ConfigManager.LoadConfig();    // Load config
             LoadData();                             // Load Data
-
-            Test testWindow = new Test();
-            testWindow.ShowDialog();
         }
 
         private void LoadData()

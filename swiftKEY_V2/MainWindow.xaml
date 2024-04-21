@@ -10,6 +10,7 @@
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
     <Window.Resources>
+        <!--#region Custom Colors -->
         <!-- Custom Colors -->
         <Color x:Key="custom_darkgray">#1C1C1C</Color>
         <Color x:Key="custom_gray">#2C2C2C</Color>
@@ -24,7 +25,8 @@
         <SolidColorBrush x:Key="custom_lightgray_2_brush" Color="{StaticResource custom_lightgray_2}"/>
         <SolidColorBrush x:Key="custom_lightgray_3_brush" Color="{StaticResource custom_lightgray_3}"/>
         <SolidColorBrush x:Key="custom_gray_text_brush" Color="{StaticResource custom_gray_text}"/>
-
+        <!--#endregion-->
+        <!--#region Custom Search Box -->
         <!-- Search Box Style -->
         <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
             <Setter Property="Template">
@@ -64,7 +66,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!--#region Custom Expander -->
+        <!--#endregion-->
+        <!-- #region Custom Expander -->
         <!-- Expander Toggle Button Style -->
         <Style x:Key="ExpanderDownHeaderStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
@@ -265,7 +268,6 @@
                 </Style>
             </Style.Resources>
         </Style>
-
         <!--#endregion-->
         <!-- #region CustomComboBox -->
         <!-- ComboBox DropDown Style -->

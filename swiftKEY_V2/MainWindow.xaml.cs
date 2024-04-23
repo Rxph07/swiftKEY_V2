@@ -21,19 +21,13 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.0.2.1";
+        private const string version = "swiftKEY 2.0.3.1";
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
 
-            config = ConfigManager.LoadConfig();    // Load config
-            LoadData();                             // Load Data
-        }
-
-        private void LoadData()
-        {
             dictionary = new List<FunctionDictionary>
             {
                 new FunctionDictionary { Name = "Hotkey", Function = "hotkey" },
@@ -42,6 +36,12 @@ namespace swiftKEY_V2
                 new FunctionDictionary { Name = "Lautstärke stummschalten", Function = "volumemute" }
             };
 
+            config = ConfigManager.LoadConfig();    // Load config
+            LoadData();                             // Load Data
+        }
+
+        private void LoadData()
+        {
             lbl_version.Content = version;
             cellText1.Text = config.ButtonConfigurations[0].Name;
             cellText2.Text = config.ButtonConfigurations[1].Name;
@@ -253,8 +253,15 @@ namespace swiftKEY_V2
             if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "hotkey")
             {
                 HotkeySettingsWindow hotkeySettingsWindow = new HotkeySettingsWindow(btnIndex);
+                hotkeySettingsWindow.Closed += HotkeySettingsWindow_Closed;
                 hotkeySettingsWindow.ShowDialog();
             }
+        }
+
+        private void HotkeySettingsWindow_Closed(object sender, EventArgs e)
+        {
+            config = ConfigManager.LoadConfig();
+            LoadData();
         }
         #endregion
     }

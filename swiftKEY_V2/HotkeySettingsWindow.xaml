@@ -58,7 +58,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <!-- arrow icon + transition -->
-                        <Border x:Name="templateRoot" Background="{StaticResource ComboBox.Static.Background}" BorderBrush="{StaticResource ComboBox.Static.Border}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                        <Border x:Name="templateRoot" Background="{StaticResource ComboBox.Static.Background}" BorderBrush="{StaticResource ComboBox.Static.Border}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true" CornerRadius="5">
                             <Border x:Name="splitBorder" BorderBrush="Transparent" BorderThickness="1" Margin="170,0,0,0" SnapsToDevicePixels="true" Width="30" HorizontalAlignment="Left">
                                 <Path x:Name="arrow" Width="15" Height="10" Fill="{StaticResource ComboBox.Static.Glyph}" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M0,0 L4,4 L8,0 Z" Stretch="Fill">
                                     <Path.RenderTransformOrigin>
@@ -230,7 +230,8 @@
                         Panel.ZIndex="1"
                         Click="ChooseHotkey_Click"
                         FontSize="16"
-                        FontWeight="SemiBold">
+                        FontWeight="SemiBold"
+                        BorderThickness="0">
                     <Button.Template>
                         <ControlTemplate TargetType="{x:Type Button}">
                             <Border x:Name="border"
@@ -312,41 +313,95 @@
             </Style.Triggers>
         </Style>
         <!--#endregion-->
+        <!-- #region Custom TextBox -->
+        <ControlTemplate x:Key="TextBoxTemplate" TargetType="{x:Type TextBox}">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="0">
+                <ScrollViewer x:Name="PART_ContentHost" Focusable="false"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    <Setter TargetName="PART_ContentHost" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <!-- #endregion -->
+        <!-- #region Button Template -->
+        <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="5">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="{StaticResource custom_lightgray_2_brush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="{StaticResource custom_lightgray_3_brush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <!-- #endregion -->
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Window.Background>
+        <SolidColorBrush Color="{StaticResource custom_gray}"/>
+    </Window.Background>
 
-        <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-            <Label Content="Button Name:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBox x:Name="txtButtonName" Width="200" Margin="0,0,10,0"/>
-        </StackPanel>
+    <Border BorderBrush="{StaticResource custom_darkgray_brush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Content -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
-            <Label Content="Key Combination:" Margin="0,0,10,0"/>
-            <TextBox x:Name="txtKeyCombination" Width="150" Margin="0,0,10,0"/>
-            <ComboBox Style="{DynamicResource Custom_ComboBoxStyle}"
-                      x:Name="cb_chooseHotkey"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Width="200" Height="30"
-                      ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
-                      SelectedIndex="-1"
-                      SelectionChanged="cb_chooseHotkey_SelectionChanged"
-                      Foreground="{StaticResource custom_gray_text_brush}"
-                      Template="{StaticResource ButtonComboBoxTemplate}">
-            </ComboBox>
-        </StackPanel>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+                    <Label Content="Anzeigename:" VerticalAlignment="Center" Margin="0,0,30,0" FontSize="16" FontWeight="SemiBold"
+                           Foreground="{StaticResource custom_gray_text_brush}"/>
+                    <TextBox x:Name="txt_ButtonName"
+                             Width="200" Height="30"
+                             Margin="0,0,10,0" 
+                             Background="{StaticResource custom_lightgray_1_brush}"
+                             Foreground="{StaticResource custom_gray_text_brush}"
+                             FontSize="16" FontWeight="SemiBold"
+                             VerticalContentAlignment="Center"
+                             BorderThickness="0"
+                             Template="{StaticResource TextBoxTemplate}"
+                             TextChanged="ButtonName_TextChanged"/>
+                </StackPanel>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+                    <Label Content="Hotkey wählen:" Margin="0,0,21,0" FontSize="16" FontWeight="SemiBold"
+                           Foreground="{StaticResource custom_gray_text_brush}"/>
+                    <ComboBox Style="{DynamicResource Custom_ComboBoxStyle}"
+                              x:Name="cb_chooseHotkey"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              Width="200" Height="30"
+                              ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
+                              SelectedIndex="-1"
+                              SelectionChanged="cb_chooseHotkey_SelectionChanged"
+                              Foreground="{StaticResource custom_gray_text_brush}"
+                              Template="{StaticResource ButtonComboBoxTemplate}">
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
 
-        <!-- Footer -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-            <Button Content="Schließen" Click="CloseButton_Click" Width="100" Margin="0,0,10,0"/>
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                <Button Content="Schließen" Click="CloseButton_Click" Width="100" Height="25" Margin="0"
+                        FontSize="16" FontWeight="SemiBold"
+                        Foreground="{StaticResource custom_gray_text_brush}"
+                        Background="{StaticResource custom_lightgray_1_brush}"
+                        Template="{StaticResource ButtonTemplate}"
+                        BorderThickness="0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

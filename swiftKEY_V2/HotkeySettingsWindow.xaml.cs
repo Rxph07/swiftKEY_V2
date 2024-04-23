@@ -42,6 +42,7 @@ namespace swiftKEY_V2
             InitializeComponent();
             _currentInstance = this;
             _proc = HookCallback;
+            btnIndex = pressedBtnIndex;
             config = ConfigManager.LoadConfig();
 
             Owner = Application.Current.MainWindow;
@@ -51,14 +52,20 @@ namespace swiftKEY_V2
             ShowInTaskbar = false;
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
-            txtButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
-            btnIndex = pressedBtnIndex;
+            txt_ButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
             Loaded += HotkeySettingsWindow_Loaded;
 
             for (int i = 1; i < 25; i++)
             {
                 cb_chooseHotkey.Items.Add("F" + i);
             }
+        }
+
+        private void ButtonName_TextChanged(object sender, RoutedEventArgs e)
+        {
+            config = ConfigManager.LoadConfig();
+            config.ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
+            ConfigManager.SaveConfig(config);
         }
 
         private void cb_chooseHotkey_SelectionChanged(object sender, EventArgs e)
@@ -90,6 +97,7 @@ namespace swiftKEY_V2
                 hotkeyCode = -1;
                 KeyUp += ButtonPreviewKeyUpHandler;
                 currentButton.LostKeyboardFocus += ButtonLostKeyboardFocusHandler;
+                currentButton.Content = "Warte auf Eingabe...";
             }
         }
 
@@ -102,7 +110,7 @@ namespace swiftKEY_V2
                 {
                     currentButton.Content = BuildKeyCombination(isShiftPressed, isCtrlPressed, isAltPressed, isWinPressed);
                     if (!isShiftPressed && !isCtrlPressed && !isAltPressed && !isWinPressed)
-                        currentButton.Content = "Hotkey wählen...";
+                        currentButton.Content = "Warte auf Eingabe...";
                 }
             }
         }
@@ -187,7 +195,7 @@ namespace swiftKEY_V2
                     builder.Append(KeyInterop.KeyFromVirtualKey(int.Parse(splitFunction[i])).ToString());
             }
 
-            if (splitFunction[0] == "")
+            if (splitFunction[0] == "" || splitFunction.Length == 1)
             {
                 return "Hotkey wählen...";
             }

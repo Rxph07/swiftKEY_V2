@@ -9,7 +9,7 @@
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
     <Window.Resources>
-        <!-- Custom Colors -->
+        <!-- #region Custom Colors -->
         <Color x:Key="custom_darkgray">#1C1C1C</Color>
         <Color x:Key="custom_gray">#2C2C2C</Color>
         <Color x:Key="custom_lightgray_1">#3C3C3C</Color>
@@ -23,14 +23,15 @@
         <SolidColorBrush x:Key="custom_lightgray_2_brush" Color="{StaticResource custom_lightgray_2}"/>
         <SolidColorBrush x:Key="custom_lightgray_3_brush" Color="{StaticResource custom_lightgray_3}"/>
         <SolidColorBrush x:Key="custom_gray_text_brush" Color="{StaticResource custom_gray_text}"/>
-
-        <!-- #region CustomComboBox -->
+        <!--#endregion-->
+        <!-- #region Custom ComboBox -->
         <!-- ComboBox DropDown Style -->
         <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
             <Setter Property="Background" Value="{StaticResource custom_lightgray_1_brush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="30"/>
         </Style>
 
         <!-- Custom ComboBox Style -->
@@ -93,7 +94,6 @@
                                 </Path>
                             </Border>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
@@ -134,6 +134,17 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        <!-- combo Box Scrollbar style -->
+        <ControlTemplate x:Key="CustomComboBoxScrollViewerTemplate" TargetType="{x:Type ScrollViewer}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollContentPresenter Grid.Row="0" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+            </Grid>
+        </ControlTemplate>
 
         <!-- basic control template -->
         <ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
@@ -145,21 +156,20 @@
 
                 <!-- textblock for place holder text -->
                 <TextBlock x:Name="placeHolderTextBlock"
-                           Text="Test"
-                           Visibility="Collapsed"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           TextTrimming="CharacterEllipsis"
-                           Foreground="{StaticResource custom_gray_text_brush}"
-                           Margin="5, 0, 5, 0"
-                           Grid.ColumnSpan="2"
-                           IsHitTestVisible="true"
-                           Panel.ZIndex="1"/>
-
+                   Text="Test"
+                   Visibility="Collapsed"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   TextTrimming="CharacterEllipsis"
+                   Foreground="{StaticResource custom_gray_text_brush}"
+                   Margin="5, 0, 5, 0"
+                   Grid.ColumnSpan="2"
+                   IsHitTestVisible="true"
+                   Panel.ZIndex="1"/>
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" Margin="1" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                     <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
                         <Border x:Name="dropDownBorder" Background="{StaticResource custom_lightgray_1_brush}" BorderBrush="{StaticResource custom_gray_text_brush}" BorderThickness="0, 1, 0, 0">
-                            <ScrollViewer x:Name="DropDownScrollViewer">
+                            <ScrollViewer x:Name="DropDownScrollViewer" Template="{StaticResource CustomComboBoxScrollViewerTemplate}">
                                 <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
                                         <Rectangle x:Name="opaqueRect" Fill="{StaticResource custom_darkgray_brush}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
@@ -218,13 +228,15 @@
                         Grid.ColumnSpan="2"
                         IsHitTestVisible="true"
                         Panel.ZIndex="1"
-                        Click="ChooseHotkey_Click">
+                        Click="ChooseHotkey_Click"
+                        FontSize="16"
+                        FontWeight="SemiBold">
                     <Button.Template>
                         <ControlTemplate TargetType="{x:Type Button}">
                             <Border x:Name="border"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
@@ -242,7 +254,7 @@
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" Margin="1" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                     <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
                         <Border x:Name="dropDownBorder" Background="{StaticResource custom_lightgray_1_brush}" BorderBrush="{StaticResource custom_gray_text_brush}" BorderThickness="0, 1, 0, 0">
-                            <ScrollViewer x:Name="DropDownScrollViewer">
+                            <ScrollViewer x:Name="DropDownScrollViewer" Template="{StaticResource CustomComboBoxScrollViewerTemplate}">
                                 <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
                                         <Rectangle x:Name="opaqueRect" Fill="{StaticResource custom_darkgray_brush}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
@@ -257,6 +269,7 @@
                 <ContentPresenter x:Name="contentPresenter" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
             </Grid>
             <ControlTemplate.Triggers>
+                <!-- show only when no item is selected -->
                 <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
                     <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
                     <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
@@ -298,7 +311,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <!-- #endregion -->
+        <!--#endregion-->
     </Window.Resources>
 
     <Grid>
@@ -325,27 +338,9 @@
                       Width="200" Height="30"
                       ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
                       SelectedIndex="-1"
+                      SelectionChanged="cb_chooseHotkey_SelectionChanged"
                       Foreground="{StaticResource custom_gray_text_brush}"
                       Template="{StaticResource ButtonComboBoxTemplate}">
-                <ComboBox Style="{DynamicResource Custom_ComboBoxStyle}"
-                      x:Name="cb_FKeys"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Width="200" Height="30"
-                      ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
-                      ItemsSource="{Binding FKeys}"
-                      SelectedIndex="-1"
-                      Foreground="{StaticResource custom_gray_text_brush}"
-                      Template="{StaticResource ComboBoxTemplate}"/>
-                <ComboBox Style="{DynamicResource Custom_ComboBoxStyle}"
-                      x:Name="cb2"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Width="200" Height="30"
-                      ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
-                      SelectedIndex="-1"
-                      Foreground="{StaticResource custom_gray_text_brush}"
-                      Template="{StaticResource ComboBoxTemplate}"/>
             </ComboBox>
         </StackPanel>
 

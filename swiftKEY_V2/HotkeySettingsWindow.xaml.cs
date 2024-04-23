@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO.Ports;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WindowsInput.Native;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace swiftKEY_V2
 {
@@ -51,6 +53,171 @@ namespace swiftKEY_V2
             Closing += ModalWindow_Closing;
             txtButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
             btnIndex = pressedBtnIndex;
+            Loaded += HotkeySettingsWindow_Loaded;
+
+            for (int i = 1; i < 25; i++)
+            {
+                cb_chooseHotkey.Items.Add("F" + i);
+            }
+        }
+
+        private void cb_chooseHotkey_SelectionChanged(object sender, EventArgs e)
+        {
+            if (cb_chooseHotkey != null && cb_chooseHotkey.SelectedItem != null)
+            {
+                currentButton = cb_chooseHotkey.Template.FindName("btn_chooseHotkey", cb_chooseHotkey) as Button;
+                if (currentButton != null)
+                {
+                    currentButton.Content = cb_chooseHotkey.SelectedItem.ToString();
+                    config.ButtonConfigurations[btnIndex].Function = "hotkey_" + GetFKeyCode(cb_chooseHotkey.SelectedItem.ToString());
+                    ConfigManager.SaveConfig(config);
+                    currentButton = null;
+                }
+            }
+        }
+
+        private void ChooseHotkey_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                currentButton = button;
+                _hookID = SetHook(_proc);
+                currentButton.Focus();
+                isShiftPressed = false;
+                isCtrlPressed = false;
+                isAltPressed = false;
+                isWinPressed = false;
+                hotkeyCode = -1;
+                KeyUp += ButtonPreviewKeyUpHandler;
+                currentButton.LostKeyboardFocus += ButtonLostKeyboardFocusHandler;
+            }
+        }
+
+        private void ButtonPreviewKeyUpHandler(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            if (currentButton != null)
+            {
+                if (HandleSpecialKey(KeyInterop.VirtualKeyFromKey(e.Key), false))
+                {
+                    currentButton.Content = BuildKeyCombination(isShiftPressed, isCtrlPressed, isAltPressed, isWinPressed);
+                    if (!isShiftPressed && !isCtrlPressed && !isAltPressed && !isWinPressed)
+                        currentButton.Content = "Hotkey wählen...";
+                }
+            }
+        }
+
+        private bool HandleSpecialKey(int keyCode, bool value)
+        {
+            if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LeftShift) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RightShift))
+            {
+                isShiftPressed = value;
+                return true;
+            }
+            else if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LeftCtrl) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RightCtrl))
+            {
+                isCtrlPressed = value;
+                return true;
+            }
+            else if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LeftAlt) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RightAlt))
+            {
+                isAltPressed = value;
+                return true;
+            }
+            else if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LWin) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RWin))
+            {
+                isWinPressed = value;
+                return true;
+            }
+            return false;
+        }
+        private string BuildKeyCombination(bool shiftPressed, bool ctrlPressed, bool altPressed, bool winPressed)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (shiftPressed)
+                builder.Append("Shift + ");
+            if (ctrlPressed)
+                builder.Append("Ctrl + ");
+            if (altPressed)
+                builder.Append("Alt + ");
+            if (winPressed)
+                builder.Append("Win + ");
+
+            return builder.ToString();
+        }
+        private string BuildKeyCode(bool shiftPressed, bool ctrlPressed, bool altPressed, bool winPressed)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("hotkey_");
+            if (shiftPressed)
+                builder.Append("160_");
+            if (ctrlPressed)
+                builder.Append("162_");
+            if (altPressed)
+                builder.Append("164_");
+            if (winPressed)
+                builder.Append("91_");
+
+            builder.Append(hotkeyCode);
+            return builder.ToString();
+        }
+        private int GetFKeyCode(string keyName)
+        {
+            return KeyInterop.VirtualKeyFromKey(KeyInterop.KeyFromVirtualKey(KeyInterop.VirtualKeyFromKey((Key)Enum.Parse(typeof(Key), keyName))));
+        }
+        private string BuildKeyString()
+        {
+            config = ConfigManager.LoadConfig();
+            string[] splitFunction = config.ButtonConfigurations[btnIndex].Function.Split('_');
+            StringBuilder builder = new StringBuilder();
+
+            for(int i = 1; i < splitFunction.Length; i++)
+            {
+                if (splitFunction[i].Equals("160"))
+                    builder.Append("Shift + ");
+                else if (splitFunction[i].Equals("162"))
+                    builder.Append("Ctrl + ");
+                else if (splitFunction[i].Equals("164"))
+                    builder.Append("Alt + ");
+                else if (splitFunction[i].Equals("91"))
+                    builder.Append("Win + ");
+                else
+                    builder.Append(KeyInterop.KeyFromVirtualKey(int.Parse(splitFunction[i])).ToString());
+            }
+
+            if (splitFunction[0] == "")
+            {
+                return "Hotkey wählen...";
+            }
+
+            return builder.ToString();
+        }
+        private void FinishInput()
+        {
+            if (currentButton != null)
+            {
+                currentButton.LostKeyboardFocus -= ButtonLostKeyboardFocusHandler;
+            }
+
+            currentButton = null;
+            config.ButtonConfigurations[btnIndex].Function = hotkey;
+            ConfigManager.SaveConfig(config);
+            UnhookWindowsHookEx(_hookID);
+        }
+
+        private void ButtonLostKeyboardFocusHandler(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            FinishInput();
+        }
+
+        private void HotkeySettingsWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            currentButton = cb_chooseHotkey.Template.FindName("btn_chooseHotkey", cb_chooseHotkey) as Button;
+            if (currentButton != null) {
+                currentButton.Content = BuildKeyString();
+            }
         }
 
         #region Handle Keypress Supression
@@ -112,114 +279,6 @@ namespace swiftKEY_V2
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
         #endregion
-
-        private void ChooseHotkey_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button)
-            {
-                _hookID = SetHook(_proc);
-                button.Focus();
-                currentButton = button;
-                isShiftPressed = false;
-                isCtrlPressed = false;
-                isAltPressed = false;
-                isWinPressed = false;
-                hotkeyCode = -1;
-                KeyUp += ButtonPreviewKeyUpHandler;
-                button.LostKeyboardFocus += ButtonLostKeyboardFocusHandler;
-            }
-        }
-
-        private void ButtonPreviewKeyUpHandler(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-            if (currentButton != null)
-            {
-                if (HandleSpecialKey(KeyInterop.VirtualKeyFromKey(e.Key), false))
-                {
-                    currentButton.Content = BuildKeyCombination(isShiftPressed, isCtrlPressed, isAltPressed, isWinPressed);
-                    if (!isShiftPressed && !isCtrlPressed && !isAltPressed && !isWinPressed)
-                        currentButton.Content = "Hotkey wählen...";
-                }
-            }
-        }
-
-        private bool HandleSpecialKey(int keyCode, bool value)
-        {
-            if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LeftShift) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RightShift))
-            {
-                isShiftPressed = value;
-                return true;
-            }
-            else if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LeftCtrl) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RightCtrl))
-            {
-                isCtrlPressed = value;
-                return true;
-            }
-            else if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LeftAlt) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RightAlt))
-            {
-                isAltPressed = value;
-                return true;
-            }
-            else if (keyCode == KeyInterop.VirtualKeyFromKey(Key.LWin) || keyCode == KeyInterop.VirtualKeyFromKey(Key.RWin))
-            {
-                isWinPressed = value;
-                return true;
-            }
-            return false;
-        }
-
-        private string BuildKeyCombination(bool shiftPressed, bool ctrlPressed, bool altPressed, bool winPressed)
-        {
-            StringBuilder builder = new StringBuilder();
-
-            if (shiftPressed)
-                builder.Append("Shift + ");
-            if (ctrlPressed)
-                builder.Append("Ctrl + ");
-            if (altPressed)
-                builder.Append("Alt + ");
-            if (winPressed)
-                builder.Append("Win + ");
-
-            return builder.ToString();
-        }
-
-        private string BuildKeyCode(bool shiftPressed, bool ctrlPressed, bool altPressed, bool winPressed)
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.Append("hotkey_");
-            if (shiftPressed)
-                builder.Append("160_");
-            if (ctrlPressed)
-                builder.Append("162_");
-            if (altPressed)
-                builder.Append("164_");
-            if (winPressed)
-                builder.Append("91_");
-
-            builder.Append(hotkeyCode);
-            return builder.ToString();
-        }
-
-        private void FinishInput()
-        {
-            if (currentButton != null)
-            {
-                currentButton.LostKeyboardFocus -= ButtonLostKeyboardFocusHandler;
-            }
-
-            currentButton = null;
-            config.ButtonConfigurations[btnIndex].Function = hotkey;
-            ConfigManager.SaveConfig(config);
-            UnhookWindowsHookEx(_hookID);
-        }
-
-        private void ButtonLostKeyboardFocusHandler(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            FinishInput();
-        }
 
         #region HandleClose
         private void ModalWindow_Deactivated(object sender, EventArgs e)

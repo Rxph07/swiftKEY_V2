@@ -394,7 +394,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
                 <Button Content="Schließen" Click="CloseButton_Click" Width="100" Height="25" Margin="0"
                         FontSize="16" FontWeight="SemiBold"
                         Foreground="{StaticResource custom_gray_text_brush}"

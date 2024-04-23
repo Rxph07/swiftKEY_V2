@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:swiftKEY_V2"
         mc:Ignorable="d"
-        Title="swiftKEY" Height="600" Width="1000" MinHeight="600" MinWidth="1000"
+        Title="swiftKEY" Height="675" Width="1150" MinHeight="675" MinWidth="1150"
         FontSize="16" FontWeight="DemiBold"
         xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
@@ -673,7 +673,7 @@
 
                 <!-- Expander with List -->
                 <!-- Expander 1 -->
-                <Expander Header="List 1" x:Name="expander1" Style="{StaticResource CustomExpanderStyle}" Margin="10">
+                <Expander Header="Windows Aktionen" x:Name="expander1" Style="{StaticResource CustomExpanderStyle}" Margin="10">
                     <StackPanel x:Name="stackPanel1" Style="{StaticResource CustomExpanderStackPanelStyle}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="•" Margin="0 0 5 0"/>
@@ -681,7 +681,27 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Lautstärke erhöhen" Visibility="Visible" MouseDown="OnDragStart"/>
+                            <TextBlock Text="Increase Volume" Visibility="Visible" MouseDown="OnDragStart"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" Margin="0 0 5 0"/>
+                            <TextBlock Text="Decrease Volume" Visibility="Visible" MouseDown="OnDragStart"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" Margin="0 0 5 0"/>
+                            <TextBlock Text="Mute Volume" Visibility="Visible" MouseDown="OnDragStart"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" Margin="0 0 5 0"/>
+                            <TextBlock Text="Shutdown" Visibility="Visible" MouseDown="OnDragStart"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" Margin="0 0 5 0"/>
+                            <TextBlock Text="Restart" Visibility="Visible" MouseDown="OnDragStart"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" Margin="0 0 5 0"/>
+                            <TextBlock Text="Lock" Visibility="Visible" MouseDown="OnDragStart"/>
                         </StackPanel>
                     </StackPanel>
                 </Expander>

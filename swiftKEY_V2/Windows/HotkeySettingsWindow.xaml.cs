@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO.Ports;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WindowsInput.Native;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace swiftKEY_V2
 {
     public partial class HotkeySettingsWindow : Window
     {
-        public List<string> FKeys { get; set; } = new List<string>();
-        public bool NewBinding = false;
-
         private ButtonConfig config;
         private Button currentButton;
 

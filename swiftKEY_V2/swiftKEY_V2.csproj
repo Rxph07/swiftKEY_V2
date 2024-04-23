@@ -92,6 +92,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Windows\DefaultSettingsWindow.xaml.cs">
+      <DependentUpon>DefaultSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\VolumeSettingsWindow.xaml.cs">
+      <DependentUpon>VolumeSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,13 +112,21 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="HotkeySettingsWindow.xaml">
+    <Page Include="Windows\DefaultSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\HotkeySettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\VolumeSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HotkeySettingsWindow.xaml.cs">
+    <Compile Include="Windows\HotkeySettingsWindow.xaml.cs">
       <DependentUpon>HotkeySettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">

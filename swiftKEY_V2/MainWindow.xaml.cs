@@ -21,7 +21,7 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.0.3.1";
+        private const string version = "swiftKEY 2.0.4.1";
 
         public MainWindow()
         {
@@ -31,9 +31,12 @@ namespace swiftKEY_V2
             dictionary = new List<FunctionDictionary>
             {
                 new FunctionDictionary { Name = "Hotkey", Function = "hotkey" },
-                new FunctionDictionary { Name = "Lautstärke erhöhen", Function = "volumeup" },
-                new FunctionDictionary { Name = "Lautstärke verringern", Function = "volumedown" },
-                new FunctionDictionary { Name = "Lautstärke stummschalten", Function = "volumemute" }
+                new FunctionDictionary { Name = "Increase Volume", Function = "volumeup" },
+                new FunctionDictionary { Name = "Decrease Volume", Function = "volumedown" },
+                new FunctionDictionary { Name = "Mute Volume", Function = "volumemute" },
+                new FunctionDictionary { Name = "Shutdown", Function = "shutdown" },
+                new FunctionDictionary { Name = "Restart", Function = "restart" },
+                new FunctionDictionary { Name = "Lock", Function = "lock" }
             };
 
             config = ConfigManager.LoadConfig();    // Load config
@@ -203,7 +206,7 @@ namespace swiftKEY_V2
                     if (textBlock.Text.ToLower().Contains(searchText))
                     {
                         stackPanel.Visibility = Visibility.Visible;
-                        expander1.IsExpanded = true; // Expand the expander if there's a match
+                        expander1.IsExpanded = true;
                     }
                     else
                     {
@@ -256,9 +259,31 @@ namespace swiftKEY_V2
                 hotkeySettingsWindow.Closed += HotkeySettingsWindow_Closed;
                 hotkeySettingsWindow.ShowDialog();
             }
+            else if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "increase volume" || 
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "decrease volume")
+            {
+                VolumeSettingsWindow volumeSettingsWindow = new VolumeSettingsWindow(btnIndex);
+                volumeSettingsWindow.Closed += VolumeSettingsWindow_Closed;
+                volumeSettingsWindow.ShowDialog();
+            }
+            else
+            {
+                if(config.ButtonConfigurations[btnIndex].Title.ToLower() == "" || config.ButtonConfigurations[btnIndex].Name.ToLower() == "")
+                    return;
+
+                DefaultSettingsWindow defaultSettingsWindow = new DefaultSettingsWindow(btnIndex);
+                defaultSettingsWindow.Closed += VolumeSettingsWindow_Closed;
+                defaultSettingsWindow.ShowDialog();
+            }
         }
 
         private void HotkeySettingsWindow_Closed(object sender, EventArgs e)
+        {
+            config = ConfigManager.LoadConfig();
+            LoadData();
+        }
+
+        private void VolumeSettingsWindow_Closed(object sender, EventArgs e)
         {
             config = ConfigManager.LoadConfig();
             LoadData();

@@ -21,7 +21,7 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.0.4.1";
+        private const string version = "swiftKEY 2.0.5.1";
 
         public MainWindow()
         {

@@ -44,6 +44,7 @@ namespace swiftKEY_V2
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
             txt_ButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
+            label_buttonAction.Content = config.ButtonConfigurations[pressedBtnIndex].Title;
             Loaded += HotkeySettingsWindow_Loaded;
 
             for (int i = 1; i < 25; i++)

@@ -2,13 +2,6 @@
 using System.Runtime.InteropServices;
 using NAudio.CoreAudioApi;
 using System.Diagnostics;
-using WindowsInput;
-using System.Collections.Generic;
-using System.Windows;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using WindowsInput.Native;
-using System.Windows.Media.Animation;
-using System.Windows.Input;
 
 namespace swiftKEY_V2
 {
@@ -19,8 +12,6 @@ namespace swiftKEY_V2
         private static MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
         // Keyboard
-        //private static InputSimulator simulator = new InputSimulator();
-
         [DllImport("user32.dll", SetLastError = true)]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
 
@@ -112,12 +103,6 @@ namespace swiftKEY_V2
             {
                 Lock();
             }
-        }
-
-        private static void PressKey(int keyCode)
-        {
-            VirtualKeyCode key = (VirtualKeyCode) keyCode;
-            //simulator.Keyboard.KeyPress(key);
         }
 
         private static void OpenProgram(string name)

@@ -60,6 +60,20 @@ namespace swiftKEY_V2
             ConfigManager.SaveConfig(config);
         }
 
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            config = ConfigManager.LoadConfig();
+            config.ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
+            config.ButtonConfigurations[btnIndex].Name = "";
+            config.ButtonConfigurations[btnIndex].Function = "";
+            ConfigManager.SaveConfig(config);
+
+            if (closingInProgress)
+                return;
+
+            Close();
+        }
+
         private void cb_chooseHotkey_SelectionChanged(object sender, EventArgs e)
         {
             if (cb_chooseHotkey != null && cb_chooseHotkey.SelectedItem != null)

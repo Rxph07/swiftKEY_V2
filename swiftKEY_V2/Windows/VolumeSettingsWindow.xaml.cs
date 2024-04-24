@@ -35,6 +35,20 @@ namespace swiftKEY_V2
             ConfigManager.SaveConfig(config);
         }
 
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            config = ConfigManager.LoadConfig();
+            config.ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
+            config.ButtonConfigurations[btnIndex].Name = "";
+            config.ButtonConfigurations[btnIndex].Function = "";
+            ConfigManager.SaveConfig(config);
+
+            if (closingInProgress)
+                return;
+
+            Close();
+        }
+
         #region HandleClose
         private void ModalWindow_Deactivated(object sender, EventArgs e)
         {

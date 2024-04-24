@@ -399,6 +399,12 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                <Button Content="Löschen" Click="DeleteButton_Click" Width="100" Height="25" Margin="0, 0, 10, 0"
+                        FontSize="16" FontWeight="SemiBold"
+                        Foreground="{StaticResource custom_gray_text_brush}"
+                        Background="{StaticResource custom_lightgray_1_brush}"
+                        Template="{StaticResource ButtonTemplate}"
+                        BorderThickness="0"/>
                 <Button Content="Schließen" Click="CloseButton_Click" Width="100" Height="25" Margin="0"
                         FontSize="16" FontWeight="SemiBold"
                         Foreground="{StaticResource custom_gray_text_brush}"

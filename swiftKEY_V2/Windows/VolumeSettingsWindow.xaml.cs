@@ -25,6 +25,7 @@ namespace swiftKEY_V2
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
             txt_ButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
+            label_buttonAction.Content = config.ButtonConfigurations[pressedBtnIndex].Title;
         }
 
         private void ButtonName_TextChanged(object sender, RoutedEventArgs e)

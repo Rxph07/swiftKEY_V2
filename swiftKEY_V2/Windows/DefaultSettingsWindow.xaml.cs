@@ -55,6 +55,9 @@ namespace swiftKEY_V2
             if (closingInProgress)
                 return;
 
+            if (txt_ButtonName.Text.Length == 0)
+                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+
             Close();
         }
 
@@ -65,6 +68,9 @@ namespace swiftKEY_V2
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            if (txt_ButtonName.Text.Length == 0)
+                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+
             Close();
         }
         #endregion

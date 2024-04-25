@@ -703,6 +703,14 @@
                             <TextBlock Text="•" Margin="0 0 5 0"/>
                             <TextBlock Text="Lock" Visibility="Visible" MouseDown="OnDragStart"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" Margin="0 0 5 0"/>
+                            <TextBlock Text="Open File" Visibility="Visible" MouseDown="OnDragStart"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="•" Margin="0 0 5 0"/>
+                            <TextBlock Text="Open Folder" Visibility="Visible" MouseDown="OnDragStart"/>
+                        </StackPanel>
                     </StackPanel>
                 </Expander>
 

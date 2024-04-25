@@ -36,7 +36,9 @@ namespace swiftKEY_V2
                 new FunctionDictionary { Name = "Mute Volume", Function = "volumemute" },
                 new FunctionDictionary { Name = "Shutdown", Function = "shutdown" },
                 new FunctionDictionary { Name = "Restart", Function = "restart" },
-                new FunctionDictionary { Name = "Lock", Function = "lock" }
+                new FunctionDictionary { Name = "Lock", Function = "lock" },
+                new FunctionDictionary { Name = "Open File", Function = "openfile" },
+                new FunctionDictionary { Name = "Open Folder", Function = "openfolder" }
             };
 
             config = ConfigManager.LoadConfig();    // Load config
@@ -256,15 +258,22 @@ namespace swiftKEY_V2
             if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "hotkey")
             {
                 HotkeySettingsWindow hotkeySettingsWindow = new HotkeySettingsWindow(btnIndex);
-                hotkeySettingsWindow.Closed += HotkeySettingsWindow_Closed;
+                hotkeySettingsWindow.Closed += ModalWindow_Closed;
                 hotkeySettingsWindow.ShowDialog();
             }
             else if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "increase volume" || 
                 config.ButtonConfigurations[btnIndex].Title.ToLower() == "decrease volume")
             {
                 VolumeSettingsWindow volumeSettingsWindow = new VolumeSettingsWindow(btnIndex);
-                volumeSettingsWindow.Closed += VolumeSettingsWindow_Closed;
+                volumeSettingsWindow.Closed += ModalWindow_Closed;
                 volumeSettingsWindow.ShowDialog();
+            }
+            else if(config.ButtonConfigurations[btnIndex].Title.ToLower() == "open file" ||
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "open folder")
+            {
+                OpenFileSettingsWindow openFileSettingsWindow = new OpenFileSettingsWindow(btnIndex);
+                openFileSettingsWindow.Closed += ModalWindow_Closed;
+                openFileSettingsWindow.ShowDialog();
             }
             else
             {
@@ -272,18 +281,12 @@ namespace swiftKEY_V2
                     return;
 
                 DefaultSettingsWindow defaultSettingsWindow = new DefaultSettingsWindow(btnIndex);
-                defaultSettingsWindow.Closed += VolumeSettingsWindow_Closed;
+                defaultSettingsWindow.Closed += ModalWindow_Closed;
                 defaultSettingsWindow.ShowDialog();
             }
         }
 
-        private void HotkeySettingsWindow_Closed(object sender, EventArgs e)
-        {
-            config = ConfigManager.LoadConfig();
-            LoadData();
-        }
-
-        private void VolumeSettingsWindow_Closed(object sender, EventArgs e)
+        private void ModalWindow_Closed(object sender, EventArgs e)
         {
             config = ConfigManager.LoadConfig();
             LoadData();

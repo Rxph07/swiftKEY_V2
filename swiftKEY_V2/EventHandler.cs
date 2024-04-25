@@ -9,7 +9,6 @@ namespace swiftKEY_V2
     {
         // Sound device
         private static MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
-        private static MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
         // Keyboard
         [DllImport("user32.dll", SetLastError = true)]
@@ -74,22 +73,40 @@ namespace swiftKEY_V2
             }
             else if (data.Equals("volumeup"))
             {
+                MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 device.AudioEndpointVolume.VolumeStepUp();
             }
             else if (data.Equals("volumedown"))
             {
+                MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 device.AudioEndpointVolume.VolumeStepDown();
             }
             else if (data.Equals("volumemute"))
             {
-                if (device.AudioEndpointVolume.Mute)
-                    device.AudioEndpointVolume.Mute = false;
-                else
-                    device.AudioEndpointVolume.Mute = true;
+                MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                device.AudioEndpointVolume.Mute = !device.AudioEndpointVolume.Mute;
             }
-            else if (data.Contains("open_"))
+            else if (data.Contains("openfile_"))
             {
-                OpenProgram(data.Replace("open_", ""));
+                try
+                {
+                    Process.Start(data.Replace("openfile_", ""));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Fehler beim Öffnen der Datei: {ex.Message}");
+                }
+            }
+            else if (data.Contains("openfolder_"))
+            {
+                try
+                {
+                    Process.Start(data.Replace("openfolder_", ""));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Fehler beim Öffnen der Datei: {ex.Message}");
+                }
             }
             else if (data.Equals("shutdown"))
             {

@@ -68,6 +68,16 @@
         </Style>
         <!--#endregion-->
         <!-- #region Custom Expander -->
+        <!-- Expander Scrollbar style -->
+        <ControlTemplate x:Key="CustomExpanderScrollViewerTemplate" TargetType="{x:Type ScrollViewer}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollContentPresenter Grid.Row="0" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+            </Grid>
+        </ControlTemplate>
         <!-- Expander Toggle Button Style -->
         <Style x:Key="ExpanderDownHeaderStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
@@ -664,70 +674,60 @@
 
         <!-- Rechte Seite -->
         <Grid Grid.Column="1">
-            <StackPanel Grid.Row="0">
-                <!-- Search Box -->
-                <TextBox x:Name="tb_searchBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10"
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Template="{StaticResource CustomExpanderScrollViewerTemplate}">
+                <StackPanel Grid.Row="0">
+                    <!-- Search Box -->
+                    <TextBox x:Name="tb_searchBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10"
                             TextChanged="SearchBox_TextChanged" Background="{StaticResource custom_lightgray_1_brush}"
                             Style="{StaticResource RoundedTextBoxStyle}" BorderThickness="0" Padding="30,0,0,0"
                             Foreground="{StaticResource custom_gray_text_brush}" Height="25" VerticalContentAlignment="Center"/>
 
-                <!-- Expander with List -->
-                <!-- Expander 1 -->
-                <Expander Header="Windows Aktionen" x:Name="expander1" Style="{StaticResource CustomExpanderStyle}" Margin="10">
-                    <StackPanel x:Name="stackPanel1" Style="{StaticResource CustomExpanderStackPanelStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Hotkey" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Increase Volume" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Decrease Volume" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Mute Volume" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Shutdown" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Restart" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Lock" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Open File" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="Open Folder" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Expander>
-
-                <!-- Expander 2 -->
-                <Expander Header="List 2" x:Name="expander2" Style="{StaticResource CustomExpanderStyle}" Margin="10">
-                    <StackPanel x:Name="stackPanel2" Style="{StaticResource CustomExpanderStackPanelStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="hotkey_c" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="•" Margin="0 0 5 0"/>
-                            <TextBlock Text="hotkey_d" Visibility="Visible" MouseDown="OnDragStart"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Expander>
-            </StackPanel>
+                    <!-- Expander with List -->
+                    <!-- Expander 1 -->
+                    <Expander Header="Windows Aktionen" x:Name="expander1" Style="{StaticResource CustomExpanderStyle}" Margin="10">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="250" Template="{StaticResource CustomExpanderScrollViewerTemplate}">
+                            <StackPanel x:Name="stackPanel1" Style="{StaticResource CustomExpanderStackPanelStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Hotkey" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Increase Volume" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Decrease Volume" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Mute Volume" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Shutdown" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Restart" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Lock" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Open File" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Open Folder" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Expander>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>

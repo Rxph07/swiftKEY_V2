@@ -21,7 +21,7 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.0.6.2";
+        private const string version = "swiftKEY 2.0.7.3";
 
         public MainWindow()
         {
@@ -218,7 +218,7 @@ namespace swiftKEY_V2
             }
 
             // Durchsuche List 2
-            foreach (StackPanel stackPanel in stackPanel2.Children)
+            /*foreach (StackPanel stackPanel in stackPanel2.Children)
             {
                 foreach (TextBlock textBlock in stackPanel.Children)
                 {
@@ -232,12 +232,12 @@ namespace swiftKEY_V2
                         stackPanel.Visibility = Visibility.Collapsed;
                     }
                 }
-            }
+            }*/
 
             if (searchText == "" || searchText == null)
             {
                 expander1.IsExpanded = false;
-                expander2.IsExpanded = false;
+                //expander2.IsExpanded = false;
             }
         }
         #endregion

@@ -726,6 +726,42 @@
                             </StackPanel>
                         </ScrollViewer>
                     </Expander>
+
+                    <!-- Expander 2 -->
+                    <Expander Header="Spotify Aktionen" x:Name="expander2" Style="{StaticResource CustomExpanderStyle}" Margin="10">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="250" Template="{StaticResource CustomExpanderScrollViewerTemplate}">
+                            <StackPanel x:Name="stackPanel2" Style="{StaticResource CustomExpanderStackPanelStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Play / Pause" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Previous Song" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Next Song" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Volume Up" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Volume Down" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Repeat Mode" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Shuffle Mode" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Expander>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

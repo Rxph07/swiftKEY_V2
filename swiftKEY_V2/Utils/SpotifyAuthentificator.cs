@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace swiftKEY_V2.Utils
 {
@@ -21,29 +22,32 @@ namespace swiftKEY_V2.Utils
         private static string _refreshToken;
         private SpotifyConfig config;
 
-        public void InitializeAuth()
+        public async Task InitializeAuthAsync()
         {
             config = ConfigManager.LoadSpotifyConfig();
+            _clientId = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientID").Value;
+            _clientSecret = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientSecret").Value;
+            _redirectUri = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "RedirectUri").Value;
+            _refreshToken = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "RefreshToken").Value;
+
             // Überprüfe, ob ein Refresh Token vorhanden ist
             if (LoadRefreshTokenFromSettings())
             {
-                Task.Run(async () =>
+                bool isValid = await CheckRefreshTokenValidity();
+                if (isValid)
                 {
-                    bool isValid = await CheckRefreshTokenValidity();
-                    if (!isValid)
-                    {
-                        // Refresh Token ist ungültig ein neues wird angefordert
-                        await Task.Run(() => StartHttpListener());
-                    }
-                });
-
-                // Erhalte ein neues Access Token mit dem gespeicherten Refresh Token
-                Task.Run(() => RefreshAccessToken());
+                    await RefreshAccessToken();
+                }
+                else
+                {
+                    // Refresh Token ist ungültig, ein neues wird angefordert
+                    // TODO
+                }
             }
             else
             {
                 // Starte den HTTP-Listener für die Rückgabe von Spotify
-                Task.Run(() => StartHttpListener());
+                await StartHttpListener();
             }
         }
 
@@ -150,12 +154,25 @@ namespace swiftKEY_V2.Utils
 
         public void login()
         {
-            var authorizationRequestUrl = $"{_authorizationEndpoint}?response_type=code&client_id={_clientId}&redirect_uri={Uri.EscapeUriString(_redirectUri)}&scope=user-modify-playback-state";
+            if (!string.IsNullOrEmpty(_accessToken))
+            {
+                MessageBox.Show("Du bist bereits angemeldet.");
+                return;
+            }
+
+            config = ConfigManager.LoadSpotifyConfig();
+            _clientId = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientID").Value;
+            _clientSecret = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientSecret").Value;
+            _redirectUri = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "RedirectUri").Value;
+            _refreshToken = config.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "RefreshToken").Value;
+            Task.Run(() => StartHttpListener());
+            var authorizationRequestUrl = $"{_authorizationEndpoint}?response_type=code&client_id={_clientId}&redirect_uri={Uri.EscapeUriString(_redirectUri)}&scope=user-read-playback-state user-modify-playback-state";
             System.Diagnostics.Process.Start(authorizationRequestUrl);
         }
 
-        public string getAccessToken()
+        public async Task<string> GetAccessTokenAsync()
         {
+            await InitializeAuthAsync();
             return _accessToken;
         }
     }

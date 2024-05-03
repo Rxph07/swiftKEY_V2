@@ -7,7 +7,6 @@ namespace swiftKEY_V2
 {
     public partial class SpotifySettingsWindow : Window
     {
-        private SpotifyAuthentificator spotifyAuth = new SpotifyAuthentificator();
         private ButtonConfig config;
         private SpotifyConfig spotifyConfig;
         private int btnIndex;
@@ -27,19 +26,9 @@ namespace swiftKEY_V2
             ShowInTaskbar = false;
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
-            txt_ButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
-            label_buttonAction.Content = config.ButtonConfigurations[pressedBtnIndex].Title;
             txt_ClientID.Text = spotifyConfig.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientID").Value;
             txt_ClientSecret.Text = spotifyConfig.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientSecret").Value;
             txt_RedirectUri.Text = spotifyConfig.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "RedirectUri").Value;
-            spotifyAuth.InitializeAuth();
-        }
-
-        private void ButtonName_TextChanged(object sender, RoutedEventArgs e)
-        {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
-            ConfigManager.SaveConfig(config);
         }
 
         private void ClientID_TextChanged(object sender, RoutedEventArgs e)
@@ -65,21 +54,7 @@ namespace swiftKEY_V2
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            spotifyAuth.login();
-        }
-
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
-            config.ButtonConfigurations[btnIndex].Name = "";
-            config.ButtonConfigurations[btnIndex].Function = "";
-            ConfigManager.SaveConfig(config);
-
-            if (closingInProgress)
-                return;
-
-            Close();
+            MainWindow.spotifyAuth.login();
         }
 
         #region HandleClose
@@ -87,9 +62,6 @@ namespace swiftKEY_V2
         {
             if (closingInProgress)
                 return;
-
-            if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
 
             Close();
         }
@@ -101,9 +73,6 @@ namespace swiftKEY_V2
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
-
             Close();
         }
         #endregion

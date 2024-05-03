@@ -1,0 +1,212 @@
+﻿<Window x:Class="swiftKEY_V2.DefaultSpotifySettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:swiftKEY_V2"
+        mc:Ignorable="d"
+        Title="DefaultSpotifySettingsWindow" Height="450" Width="800">
+
+    <Window.Resources>
+        <!-- #region Custom Colors -->
+        <Color x:Key="custom_darkgray">#1C1C1C</Color>
+        <Color x:Key="custom_gray">#2C2C2C</Color>
+        <Color x:Key="custom_lightgray_1">#3C3C3C</Color>
+        <Color x:Key="custom_lightgray_2">#4C4C4C</Color>
+        <Color x:Key="custom_lightgray_3">#6D6D6D</Color>
+        <Color x:Key="custom_gray_text">#707070</Color>
+
+        <SolidColorBrush x:Key="custom_darkgray_brush" Color="{StaticResource custom_darkgray}"/>
+        <SolidColorBrush x:Key="custom_gray_brush" Color="{StaticResource custom_gray}"/>
+        <SolidColorBrush x:Key="custom_lightgray_1_brush" Color="{StaticResource custom_lightgray_1}"/>
+        <SolidColorBrush x:Key="custom_lightgray_2_brush" Color="{StaticResource custom_lightgray_2}"/>
+        <SolidColorBrush x:Key="custom_lightgray_3_brush" Color="{StaticResource custom_lightgray_3}"/>
+        <SolidColorBrush x:Key="custom_gray_text_brush" Color="{StaticResource custom_gray_text}"/>
+        <!--#endregion-->
+        <!-- #region Custom TextBox -->
+        <ControlTemplate x:Key="TextBoxTemplate" TargetType="{x:Type TextBox}">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="5">
+                <ScrollViewer x:Name="PART_ContentHost" Focusable="false"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    <Setter TargetName="PART_ContentHost" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <!-- #endregion -->
+        <!-- #region Button Template -->
+        <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
+            <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="5">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="{StaticResource custom_lightgray_2_brush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="{StaticResource custom_lightgray_3_brush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <!-- #endregion -->
+        <!--#region Custom Slider -->
+        <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border  BorderThickness="0" Background="{StaticResource custom_lightgray_2_brush}" Height="3"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderThumb" TargetType="Thumb">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Ellipse x:Name="Ellipse" Height="15" Width="15" Fill="{StaticResource custom_gray_text_brush}" Stroke="{StaticResource custom_gray_text_brush}"></Ellipse>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation
+                                                Storyboard.TargetName="Ellipse"
+                                                Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)"
+                                                To="{StaticResource custom_gray}"
+                                                Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Setter TargetName="Ellipse" Property="Fill" Value="{StaticResource custom_gray_text_brush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation
+                                                Storyboard.TargetName="Ellipse"
+                                                Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)"
+                                                To="{StaticResource custom_gray_text}"
+                                                Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Setter TargetName="Ellipse" Property="Fill" Value="{StaticResource custom_gray_brush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="Slider" TargetType="Slider">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Track Grid.Row="1" x:Name="PART_Track">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton}"  Command="Slider.DecreaseLarge" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource SliderThumb}"/>
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Style="{StaticResource SliderRepeatButton}" Command="Slider.IncreaseLarge" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Text="{Binding Path=Value, ElementName=PART_Track}" 
+                   Foreground="{StaticResource custom_gray_text_brush}" />
+            </Grid>
+        </ControlTemplate>
+
+        <Style x:Key="Horizontal_Slider" TargetType="Slider">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="MinHeight" Value="21" />
+                    <Setter Property="MinWidth" Value="104" />
+                    <Setter Property="Template" Value="{StaticResource Slider}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!--#endregion-->
+    </Window.Resources>
+
+    <Window.Background>
+        <SolidColorBrush Color="{StaticResource custom_gray}"/>
+    </Window.Background>
+
+    <Border BorderBrush="{StaticResource custom_darkgray_brush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label x:Name="label_buttonAction" Content="button action" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" FontSize="26" FontWeight="SemiBold"
+                           Foreground="{StaticResource custom_gray_text_brush}"/>
+                <Line Width="50" Stretch="Fill" StrokeThickness="2" Stroke="{StaticResource custom_gray_text_brush}" X2="2" Margin="0, 0, 0, 15"/>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+                    <Label Content="Anzeigename:" VerticalAlignment="Center" Margin="0,0,30,0" FontSize="16" FontWeight="SemiBold"
+                           Foreground="{StaticResource custom_gray_text_brush}"/>
+                    <TextBox x:Name="txt_ButtonName"
+                             Width="200" Height="30"
+                             Margin="0,0,10,0" 
+                             Background="{StaticResource custom_lightgray_1_brush}"
+                             Foreground="{StaticResource custom_gray_text_brush}"
+                             FontSize="16" FontWeight="SemiBold"
+                             VerticalContentAlignment="Center"
+                             BorderThickness="0"
+                             Template="{StaticResource TextBoxTemplate}"
+                             TextChanged="ButtonName_TextChanged"/>
+                </StackPanel>
+                <Button Content="Spotify Anmeldung" Click="LoginButton_Click" Width="160" Height="25" Margin="0, 20, 0, 0"
+                        FontSize="16" FontWeight="SemiBold"
+                        Foreground="{StaticResource custom_gray_text_brush}"
+                        Background="{StaticResource custom_lightgray_1_brush}"
+                        Template="{StaticResource ButtonTemplate}"
+                        BorderThickness="0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                <Button Content="Löschen" Click="DeleteButton_Click" Width="100" Height="25" Margin="0, 0, 10, 0"
+                        FontSize="16" FontWeight="SemiBold"
+                        Foreground="{StaticResource custom_gray_text_brush}"
+                        Background="{StaticResource custom_lightgray_1_brush}"
+                        Template="{StaticResource ButtonTemplate}"
+                        BorderThickness="0"/>
+                <Button Content="Schließen" Click="CloseButton_Click" Width="100" Height="25" Margin="0"
+                        FontSize="16" FontWeight="SemiBold"
+                        Foreground="{StaticResource custom_gray_text_brush}"
+                        Background="{StaticResource custom_lightgray_1_brush}"
+                        Template="{StaticResource ButtonTemplate}"
+                        BorderThickness="0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

@@ -83,6 +83,9 @@
       <HintPath>..\packages\Ookii.Dialogs.Wpf.5.0.1\lib\net462\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="SpotifyAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpotifyAPI.Web.7.1.1\lib\netstandard2.0\SpotifyAPI.Web.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -141,11 +144,17 @@
     <Compile Include="Windows\DefaultSettingsWindow.xaml.cs">
       <DependentUpon>DefaultSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\DefaultSpotifySettingsWindow.xaml.cs">
+      <DependentUpon>DefaultSpotifySettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\OpenFileSettingsWindow.xaml.cs">
       <DependentUpon>OpenFileSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SpotifySettingsWindow.xaml.cs">
       <DependentUpon>SpotifySettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SpotifyVolumeSettingsWindow.xaml.cs">
+      <DependentUpon>SpotifyVolumeSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\VolumeSettingsWindow.xaml.cs">
       <DependentUpon>VolumeSettingsWindow.xaml</DependentUpon>
@@ -168,6 +177,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\DefaultSpotifySettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\HotkeySettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -177,6 +190,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\SpotifySettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SpotifyVolumeSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
+using swiftKEY_V2.Utils;
 
 namespace swiftKEY_V2
 {
@@ -16,12 +17,13 @@ namespace swiftKEY_V2
 
     public partial class MainWindow : Window
     {
+        public static SpotifyAuthentificator spotifyAuth = new SpotifyAuthentificator();
         public List<FunctionDictionary> dictionary = new List<FunctionDictionary>();
         public List<string> COMPorts { get; set; } = new List<string>();
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.0.7.3";
+        private const string version = "swiftKEY 2.1.7.3";
 
         public MainWindow()
         {
@@ -38,7 +40,16 @@ namespace swiftKEY_V2
                 new FunctionDictionary { Name = "Restart", Function = "restart" },
                 new FunctionDictionary { Name = "Lock", Function = "lock" },
                 new FunctionDictionary { Name = "Open File", Function = "openfile" },
-                new FunctionDictionary { Name = "Open Folder", Function = "openfolder" }
+                new FunctionDictionary { Name = "Open Folder", Function = "openfolder" },
+
+                new FunctionDictionary { Name = "Play / Pause", Function = "spotifyplaypause" },
+                new FunctionDictionary { Name = "Previous Song", Function = "spotifyprevious" },
+                new FunctionDictionary { Name = "Next Song", Function = "spotifynext" },
+                new FunctionDictionary { Name = "Volume Up", Function = "spotifyvolumeup_1" },
+                new FunctionDictionary { Name = "Volume Down", Function = "spotifyvolumedown_1" },
+                new FunctionDictionary { Name = "Repeat Mode", Function = "spotifyrepeatmode" },
+                new FunctionDictionary { Name = "Shuffle Mode", Function = "spotifyshufflemode" },
+                new FunctionDictionary { Name = "Toggle Liked", Function = "spotifytoggleliked" }
             };
 
             config = ConfigManager.LoadConfig();    // Load config
@@ -218,26 +229,26 @@ namespace swiftKEY_V2
             }
 
             // Durchsuche List 2
-            /*foreach (StackPanel stackPanel in stackPanel2.Children)
+            foreach (StackPanel stackPanel in stackPanel2.Children)
             {
                 foreach (TextBlock textBlock in stackPanel.Children)
                 {
                     if (textBlock.Text.ToLower().Contains(searchText))
                     {
                         stackPanel.Visibility = Visibility.Visible;
-                        expander2.IsExpanded = true; // Expand the expander if there's a match
+                        expander2.IsExpanded = true;
                     }
                     else
                     {
                         stackPanel.Visibility = Visibility.Collapsed;
                     }
                 }
-            }*/
+            }
 
             if (searchText == "" || searchText == null)
             {
                 expander1.IsExpanded = false;
-                //expander2.IsExpanded = false;
+                expander2.IsExpanded = false;
             }
         }
         #endregion
@@ -274,6 +285,24 @@ namespace swiftKEY_V2
                 OpenFileSettingsWindow openFileSettingsWindow = new OpenFileSettingsWindow(btnIndex);
                 openFileSettingsWindow.Closed += ModalWindow_Closed;
                 openFileSettingsWindow.ShowDialog();
+            }
+            else if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "play / pause" ||
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "previous song" ||
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "next song" ||
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "repeat mode" ||
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "shuffle mode" ||
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "toggle liked")
+            {
+                DefaultSpotifySettingsWindow defaultSpotifySettingsWindow = new DefaultSpotifySettingsWindow(btnIndex);
+                defaultSpotifySettingsWindow.Closed += ModalWindow_Closed;
+                defaultSpotifySettingsWindow.ShowDialog();
+            }
+            else if(config.ButtonConfigurations[btnIndex].Title.ToLower() == "volume up" ||
+                config.ButtonConfigurations[btnIndex].Title.ToLower() == "volume down")
+            {
+                SpotifyVolumeSettingsWindow spotifyVolumeSettings = new SpotifyVolumeSettingsWindow(btnIndex);
+                spotifyVolumeSettings.Closed += ModalWindow_Closed;
+                spotifyVolumeSettings.ShowDialog();
             }
             else
             {

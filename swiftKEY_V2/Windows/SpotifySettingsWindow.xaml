@@ -73,23 +73,9 @@
             </Grid.RowDefinitions>
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Label x:Name="label_buttonAction" Content="button action" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" FontSize="26" FontWeight="SemiBold"
+                <Label Content="Spotify Anmeldung" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" FontSize="26" FontWeight="SemiBold"
                            Foreground="{StaticResource custom_gray_text_brush}"/>
                 <Line Width="50" Stretch="Fill" StrokeThickness="2" Stroke="{StaticResource custom_gray_text_brush}" X2="2" Margin="0, 0, 0, 15"/>
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-                    <Label Content="Anzeigename:" VerticalAlignment="Center" Margin="0,0,30,0" FontSize="16" FontWeight="SemiBold"
-                           Foreground="{StaticResource custom_gray_text_brush}"/>
-                    <TextBox x:Name="txt_ButtonName"
-                             Width="200" Height="30"
-                             Margin="0,0,10,0" 
-                             Background="{StaticResource custom_lightgray_1_brush}"
-                             Foreground="{StaticResource custom_gray_text_brush}"
-                             FontSize="16" FontWeight="SemiBold"
-                             VerticalContentAlignment="Center"
-                             BorderThickness="0"
-                             Template="{StaticResource TextBoxTemplate}"
-                             TextChanged="ButtonName_TextChanged"/>
-                </StackPanel>
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
                     <Label Content="ClientID:" VerticalAlignment="Center" Margin="0,0,71,0" FontSize="16" FontWeight="SemiBold"
                            Foreground="{StaticResource custom_gray_text_brush}"/>
@@ -141,12 +127,6 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-                <Button Content="Löschen" Click="DeleteButton_Click" Width="100" Height="25" Margin="0, 0, 10, 0"
-                        FontSize="16" FontWeight="SemiBold"
-                        Foreground="{StaticResource custom_gray_text_brush}"
-                        Background="{StaticResource custom_lightgray_1_brush}"
-                        Template="{StaticResource ButtonTemplate}"
-                        BorderThickness="0"/>
                 <Button Content="Schließen" Click="CloseButton_Click" Width="100" Height="25" Margin="0"
                         FontSize="16" FontWeight="SemiBold"
                         Foreground="{StaticResource custom_gray_text_brush}"

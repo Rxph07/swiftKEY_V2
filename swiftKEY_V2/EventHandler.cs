@@ -166,8 +166,9 @@ namespace swiftKEY_V2
                         {
                             await spotify.Player.PausePlayback();
                         }
-                        catch (APIException)
+                        catch (APIException ex)
                         {
+                            MessageBox.Show($"{ex.Message}");
                         }
                     }
                     else
@@ -199,7 +200,7 @@ namespace swiftKEY_V2
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    MessageBox.Show($"{ex.Message}");
                 }
                 #endregion
             }
@@ -219,7 +220,7 @@ namespace swiftKEY_V2
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    MessageBox.Show($"{ex.Message}");
                 }
                 #endregion
             }

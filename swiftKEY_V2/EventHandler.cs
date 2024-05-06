@@ -197,8 +197,9 @@ namespace swiftKEY_V2
                 {
                     await spotify.Player.SkipPrevious();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                 }
                 #endregion
             }
@@ -216,8 +217,9 @@ namespace swiftKEY_V2
                 {
                     await spotify.Player.SkipPrevious();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                 }
                 #endregion
             }

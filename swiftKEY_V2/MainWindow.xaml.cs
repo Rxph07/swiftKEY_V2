@@ -23,7 +23,7 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "swiftKEY 2.1.7.3";
+        private const string version = "swiftKEY 2.1.7.4";
 
         public MainWindow()
         {
@@ -294,7 +294,6 @@ namespace swiftKEY_V2
                 config.ButtonConfigurations[btnIndex].Title.ToLower() == "toggle liked")
             {
                 DefaultSpotifySettingsWindow defaultSpotifySettingsWindow = new DefaultSpotifySettingsWindow(btnIndex);
-                defaultSpotifySettingsWindow.Closed += ModalWindow_Closed;
                 defaultSpotifySettingsWindow.ShowDialog();
             }
             else if(config.ButtonConfigurations[btnIndex].Title.ToLower() == "volume up" ||

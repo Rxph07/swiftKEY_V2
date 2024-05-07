@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:swiftKEY_V2"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <BitmapImage x:Key="AppIcon" UriSource="/img/keySWIFT_Icon.png"/>
     </Application.Resources>
 </Application>

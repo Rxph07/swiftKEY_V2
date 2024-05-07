@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="swiftKEY" Height="675" Width="1150" MinHeight="675" MinWidth="1150"
         FontSize="16" FontWeight="DemiBold"
-        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+        xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+        Icon="{StaticResource AppIcon}">
 
     <Window.Resources>
         <!--#region Custom Colors -->

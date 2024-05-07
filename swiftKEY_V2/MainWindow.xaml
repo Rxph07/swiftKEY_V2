@@ -62,6 +62,9 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible"/>
                             </MultiTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="IBeam"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>

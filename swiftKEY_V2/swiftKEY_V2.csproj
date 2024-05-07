@@ -147,6 +147,9 @@
     <Compile Include="Windows\DefaultSpotifySettingsWindow.xaml.cs">
       <DependentUpon>DefaultSpotifySettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\LoadingScreen.xaml.cs">
+      <DependentUpon>LoadingScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\OpenFileSettingsWindow.xaml.cs">
       <DependentUpon>OpenFileSettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -182,6 +185,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\HotkeySettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\LoadingScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

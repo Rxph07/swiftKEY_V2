@@ -673,9 +673,11 @@
                 </Border>
                 <!--#endregion-->
             </Grid>
-            <Label x:Name="lbl_version" Content="Version" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource custom_gray_text_brush}" FontSize="16" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="4">
+                <Image Source="img/keySWIFT_Icon.png" Height="50"></Image>
+                <Label x:Name="lbl_version" Content="Version" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource custom_gray_text_brush}" FontSize="16" FontWeight="Bold"/>
+            </StackPanel>
         </Grid>
-
         <!-- Rechte Seite -->
         <Grid Grid.Column="1">
             <ScrollViewer VerticalScrollBarVisibility="Auto" Template="{StaticResource CustomExpanderScrollViewerTemplate}">

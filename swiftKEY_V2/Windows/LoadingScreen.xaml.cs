@@ -26,9 +26,9 @@ namespace swiftKEY_V2
 
         private async void LoadingScreen_Loaded(object sender, RoutedEventArgs e)
         {
-            progressBar.Maximum = 125;
+            progressBar.Maximum = 50;
 
-            for(int i = 0; i < 125; i++)
+            for(int i = 0; i < 50; i++)
             {
                 progressBar.Value = i;
                 await Task.Delay(1);

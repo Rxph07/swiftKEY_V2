@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:swiftKEY_V2"
         mc:Ignorable="d"
-        Title="LoadingScreen" Height="675" Width="1150">
+        Title="swiftKEY" Height="675" Width="1150"
+        Icon="{StaticResource AppIcon}">
 
     <Grid Background="#2C2C2C">
         <Image x:Name="img_Logo" Source="../img/keySWIFT_Logo_V2.png"></Image>

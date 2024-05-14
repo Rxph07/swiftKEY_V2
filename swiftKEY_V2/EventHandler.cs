@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using SpotifyAPI.Web;
 using System.Threading.Tasks;
+using System.Security.Policy;
 
 namespace swiftKEY_V2
 {
@@ -146,6 +147,19 @@ namespace swiftKEY_V2
                 Lock();
                 #endregion
             }
+            else if(data.Contains("openwebsite_"))
+            {
+                #region Open Website
+                try
+                {
+                    Process.Start(data.Replace("openwebsite_", ""));
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show($"Fehler beim Öffnen der Website. Stelle sicher, dass der eingegebene Link korrekt ist. (Bsp: https://google.com)");
+                }
+                #endregion
+            }
             else if (data.Equals("spotifyplaypause"))
             {
                 #region Spotify Play / Pause
@@ -243,9 +257,16 @@ namespace swiftKEY_V2
 
                     if (currentVolume.HasValue)
                     {
-                        var newVolume = currentVolume.Value - int.Parse(splitData[1]);
-                        newVolume = Math.Max(0, newVolume);
-                        await spotify.Player.SetVolume(new PlayerVolumeRequest((sbyte)newVolume));
+                        try
+                        {
+                            var newVolume = currentVolume.Value - int.Parse(splitData[1]);
+                            newVolume = Math.Max(0, newVolume);
+                            await spotify.Player.SetVolume(new PlayerVolumeRequest((sbyte)newVolume));
+                        }
+                        catch (APIException ex)
+                        {
+                            MessageBox.Show($"{ex.Message}");
+                        }
                     }
                 }
                 #endregion
@@ -269,9 +290,16 @@ namespace swiftKEY_V2
 
                     if (currentVolume.HasValue)
                     {
-                        var newVolume = currentVolume.Value + int.Parse(splitData[1]);
-                        newVolume = Math.Min(100, newVolume);
-                        await spotify.Player.SetVolume(new PlayerVolumeRequest((sbyte)newVolume));
+                        try
+                        {
+                            var newVolume = currentVolume.Value + int.Parse(splitData[1]);
+                            newVolume = Math.Min(100, newVolume);
+                            await spotify.Player.SetVolume(new PlayerVolumeRequest((sbyte)newVolume));
+                        }
+                        catch (APIException ex)
+                        {
+                            MessageBox.Show($"{ex.Message}");
+                        }
                     }
                 }
                 #endregion

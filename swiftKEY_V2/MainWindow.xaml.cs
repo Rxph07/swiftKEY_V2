@@ -23,7 +23,7 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "Version 2.1.10.7";
+        private const string version = "Version 2.1.11.7";
 
         public MainWindow()
         {
@@ -41,12 +41,13 @@ namespace swiftKEY_V2
                 new FunctionDictionary { Name = "Lock", Function = "lock" },
                 new FunctionDictionary { Name = "Open File", Function = "openfile" },
                 new FunctionDictionary { Name = "Open Folder", Function = "openfolder" },
+                new FunctionDictionary { Name = "Open Website", Function = "openwebsite_" },
 
                 new FunctionDictionary { Name = "Play / Pause", Function = "spotifyplaypause" },
                 new FunctionDictionary { Name = "Previous Song", Function = "spotifyprevious" },
                 new FunctionDictionary { Name = "Next Song", Function = "spotifynext" },
-                new FunctionDictionary { Name = "Volume Up", Function = "spotifyvolumeup_1" },
-                new FunctionDictionary { Name = "Volume Down", Function = "spotifyvolumedown_1" },
+                new FunctionDictionary { Name = "Volume Up", Function = "spotifyvolumeup_10" },
+                new FunctionDictionary { Name = "Volume Down", Function = "spotifyvolumedown_10" },
                 new FunctionDictionary { Name = "Repeat Mode", Function = "spotifyrepeatmode" },
                 new FunctionDictionary { Name = "Shuffle Mode", Function = "spotifyshufflemode" },
                 new FunctionDictionary { Name = "Toggle Liked", Function = "spotifytoggleliked" }
@@ -285,6 +286,12 @@ namespace swiftKEY_V2
                 OpenFileSettingsWindow openFileSettingsWindow = new OpenFileSettingsWindow(btnIndex);
                 openFileSettingsWindow.Closed += ModalWindow_Closed;
                 openFileSettingsWindow.ShowDialog();
+            }
+            else if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "open website")
+            {
+                OpenWebsiteSettingsWindow openWebsiteSettingsWindow = new OpenWebsiteSettingsWindow(btnIndex);
+                openWebsiteSettingsWindow.Closed += ModalWindow_Closed;
+                openWebsiteSettingsWindow.ShowDialog();
             }
             else if (config.ButtonConfigurations[btnIndex].Title.ToLower() == "play / pause" ||
                 config.ButtonConfigurations[btnIndex].Title.ToLower() == "previous song" ||

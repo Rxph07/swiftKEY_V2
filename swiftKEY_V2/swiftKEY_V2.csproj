@@ -153,6 +153,9 @@
     <Compile Include="Windows\OpenFileSettingsWindow.xaml.cs">
       <DependentUpon>OpenFileSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\OpenWebsiteSettingsWindow.xaml.cs">
+      <DependentUpon>OpenWebsiteSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SpotifySettingsWindow.xaml.cs">
       <DependentUpon>SpotifySettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -193,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\OpenFileSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\OpenWebsiteSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

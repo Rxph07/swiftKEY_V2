@@ -729,6 +729,10 @@
                                     <TextBlock Text="•" Margin="0 0 5 0"/>
                                     <TextBlock Text="Open Folder" Visibility="Visible" MouseDown="OnDragStart"/>
                                 </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="•" Margin="0 0 5 0"/>
+                                    <TextBlock Text="Open Website" Visibility="Visible" MouseDown="OnDragStart"/>
+                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                     </Expander>

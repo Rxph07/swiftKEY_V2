@@ -402,7 +402,7 @@
 
                 <!-- textblock for place holder text -->
                 <TextBlock x:Name="placeHolderTextBlock"
-                           Text="COM-Port wählen"
+                           Text="Profil wählen"
                            Visibility="Collapsed"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"
@@ -513,9 +513,10 @@
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       Width="200" Height="30"
-                      ItemsSource="{Binding COMPorts}"
                       ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
-                      SelectedIndex="-1"
+                      SelectedIndex="1"
+                      DropDownOpened="cb_Profiles_DropDownOpened"
+                      SelectionChanged="cb_Profiles_SelectionChanged"
                       Foreground="{StaticResource custom_gray_text_brush}">
             </ComboBox>
 

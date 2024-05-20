@@ -95,6 +95,19 @@ namespace swiftKEY_V2
             cellText15.Text = config.ButtonConfigurations[14].Name;
         }
 
+        #region Profiles
+
+        private void cb_Profiles_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cb_Profiles_SelectionChanged(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+
         #region COM-PORTS & DATAHANDLER
         private SerialPort FindESP32Port()
         {

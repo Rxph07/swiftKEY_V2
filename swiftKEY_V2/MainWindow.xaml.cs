@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
 using swiftKEY_V2.Utils;
+using System.Threading;
 
 namespace swiftKEY_V2
 {
@@ -23,11 +24,12 @@ namespace swiftKEY_V2
         public static int buttonAmount = 15;
         private ButtonConfig config;
         private SerialPort serialPort;
-        private const string version = "Version 2.1.11.7";
+        private const string version = "Version 2.2.11.7";
 
         public MainWindow()
         {
             InitializeComponent();
+            Closed += MainWindow_Closed;
             DataContext = this;
 
             dictionary = new List<FunctionDictionary>
@@ -55,6 +57,22 @@ namespace swiftKEY_V2
 
             config = ConfigManager.LoadConfig();    // Load config
             LoadData();                             // Load Data
+
+            serialPort = FindESP32Port();
+            if(serialPort != null)
+            {
+                serialPort.Open();
+                serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+            }
+            else
+                MessageBox.Show("Es wurde kein passendes Gerät erkannt!");
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            if(serialPort != null)
+                serialPort.WriteLine("keySWIFT >> disconnected with SmartPAD");
+            CloseCOMPort(serialPort);
         }
 
         private void LoadData()
@@ -78,23 +96,49 @@ namespace swiftKEY_V2
         }
 
         #region COM-PORTS & DATAHANDLER
-        private SerialPort OpenCOMPort(String port, int baudRate)
+        private SerialPort FindESP32Port()
         {
-            SerialPort serialPort = new SerialPort(port, baudRate);
-            serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+            string[] ports = SerialPort.GetPortNames();
+            foreach (string port in ports)
+            {
+                try
+                {
+                    using (SerialPort testPort = new SerialPort(port))
+                    {
+                        testPort.BaudRate = 115200;
+                        testPort.Open();
+                        testPort.WriteLine("keySWIFT >> looking for SmartPAD");
 
-            try
-            {
-                serialPort.Open();
+                        DateTime startTime = DateTime.Now;
+                        while ((DateTime.Now - startTime).TotalMilliseconds < 50)
+                        {
+                            if (testPort.BytesToRead > 0)
+                            {
+                                string response = testPort.ReadLine();
+                                Console.WriteLine(response);
+                                if (response.Contains("SmartPAD >> connected to keySWIFT"))
+                                {
+                                    testPort.Close();
+                                    return testPort;
+                                }
+                            }
+                            Thread.Sleep(10);
+                        }
+                        testPort.Close();
+                    }
+                }
+                catch (Exception)
+                {
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fehler beim Öffnen der seriellen Verbindung: " + ex.Message);
-            }
-            return serialPort;
+            return null;
         }
+
         private void CloseCOMPort(SerialPort serialPort)
         {
+            if (serialPort == null)
+                return;
+
             if (serialPort.IsOpen)
             {
                 try
@@ -106,46 +150,6 @@ namespace swiftKEY_V2
                     MessageBox.Show("Fehler beim Schließen der seriellen Verbindung: " + ex.Message);
                 }
             }
-        }
-        private void UpdateCOMPorts()
-        {
-            COMPorts.Clear();
-            string[] ports = SerialPort.GetPortNames();
-
-            if (ports != null && ports.Length > 0)
-            {
-                foreach (string port in ports)
-                {
-                    COMPorts.Add(port);
-                }
-                cb_COMPorts.ItemsSource = COMPorts;
-            }
-            else
-            {
-                MessageBox.Show("Es wurden keine COM-Ports gefunden.");
-            }
-        }
-        private void cb_COMPorts_SelectionChanged(object sender, EventArgs e)
-        {
-            if (serialPort != null)
-                CloseCOMPort(serialPort);
-
-            if (cb_COMPorts.SelectedItem == null || cb_COMPorts.SelectedItem.ToString() == null)
-                return;
-
-            string selectedPort = cb_COMPorts.SelectedItem.ToString();
-            if (!SerialPort.GetPortNames().Contains(selectedPort))
-            {
-                MessageBox.Show("Der ausgewählte COM-Port ist nicht mehr verfügbar.");
-                cb_COMPorts.SelectedItem = null;
-                return;
-            }
-
-            serialPort = OpenCOMPort(selectedPort, 115200);
-        }
-        private void cb_COMPorts_DropDownOpened(object sender, EventArgs e)
-        {
-            UpdateCOMPorts();
         }
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {

@@ -509,15 +509,13 @@
 
             <!-- ComboBox -->
             <ComboBox Style="{DynamicResource Custom_ComboBoxStyle}"
-                      x:Name="cb_COMPorts"
+                      x:Name="cb_Profiles"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
                       Width="200" Height="30"
                       ItemsSource="{Binding COMPorts}"
                       ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
                       SelectedIndex="-1"
-                      SelectionChanged="cb_COMPorts_SelectionChanged"
-                      DropDownOpened="cb_COMPorts_DropDownOpened"
                       Foreground="{StaticResource custom_gray_text_brush}">
             </ComboBox>
 

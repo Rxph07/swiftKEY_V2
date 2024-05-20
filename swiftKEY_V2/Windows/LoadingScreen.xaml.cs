@@ -33,6 +33,7 @@ namespace swiftKEY_V2
                 progressBar.Value = i;
                 await Task.Delay(1);
             }
+
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             Close();

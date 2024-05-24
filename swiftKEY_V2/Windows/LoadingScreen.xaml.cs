@@ -1,23 +1,15 @@
-﻿using NAudio.CoreAudioApi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using System.IO.Ports;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Shapes;
 
 namespace swiftKEY_V2
 {
     public partial class LoadingScreen : Window
     {
+        private MainWindow mainWindow;
+
         public LoadingScreen()
         {
             InitializeComponent();
@@ -26,7 +18,9 @@ namespace swiftKEY_V2
 
         private async void LoadingScreen_Loaded(object sender, RoutedEventArgs e)
         {
+            mainWindow = new MainWindow();
             progressBar.Maximum = 50;
+            OpenCOMPort();
 
             for(int i = 0; i < 50; i++)
             {
@@ -34,9 +28,69 @@ namespace swiftKEY_V2
                 await Task.Delay(1);
             }
 
-            MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             Close();
+        }
+
+        private void OpenCOMPort()
+        {
+            MainWindow.serialPort = FindCOMPort();
+            if (MainWindow.serialPort != null)
+            {
+                MainWindow.serialPort.Open();
+                MainWindow.serialPort.DataReceived += new SerialDataReceivedEventHandler(mainWindow.DataReceivedHandler);
+            }
+            else
+            {
+                MainWindow.serialPort = FindCOMPort();
+                if (MainWindow.serialPort != null)
+                {
+                    MainWindow.serialPort.Open();
+                    MainWindow.serialPort.DataReceived += new SerialDataReceivedEventHandler(mainWindow.DataReceivedHandler);
+                }
+                else
+                {
+                    MessageBox.Show("Es wurde kein passendes Gerät erkannt!");
+                }
+            }
+        }
+
+        private SerialPort FindCOMPort()
+        {
+            string[] ports = SerialPort.GetPortNames();
+            foreach (string port in ports)
+            {
+                try
+                {
+                    using (SerialPort testPort = new SerialPort(port))
+                    {
+                        testPort.BaudRate = 115200;
+                        testPort.Open();
+                        testPort.WriteLine("keySWIFT >> looking for SmartPAD");
+
+                        DateTime startTime = DateTime.Now;
+                        while ((DateTime.Now - startTime).TotalMilliseconds < 50)
+                        {
+                            if (testPort.BytesToRead > 0)
+                            {
+                                string response = testPort.ReadExisting();
+                                Console.WriteLine(response);
+                                if (response.Contains("SmartPAD >> connected to keySWIFT"))
+                                {
+                                    testPort.Close();
+                                    return testPort;
+                                }
+                            }
+                            Thread.Sleep(10);
+                        }
+                        testPort.Close();
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return null;
         }
     }
 }

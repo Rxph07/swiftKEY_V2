@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:swiftKEY_V2"
         mc:Ignorable="d"
         Title="SpotifyVolumeSettingsWindow" Height="450" Width="800">
-    
+
     <Window.Resources>
         <!-- #region Custom Colors -->
         <Color x:Key="custom_darkgray">#1C1C1C</Color>

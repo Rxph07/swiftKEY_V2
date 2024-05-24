@@ -3,18 +3,18 @@ using System.Windows;
 
 namespace swiftKEY_V2
 {
-    public partial class DefaultSettingsWindow : Window
+    public partial class ProfileSettingsWindow : Window
     {
         private ProfileConfig config;
-        private int btnIndex;
         private int selectedProfile;
         private bool closingInProgress = false;
+        private MainWindow mainWindow;
 
-        public DefaultSettingsWindow(int pressedBtnIndex, int selectedProfile)
+        public ProfileSettingsWindow(int selectedProfile, MainWindow mainWindow)
         {
             InitializeComponent();
-            btnIndex = pressedBtnIndex;
             this.selectedProfile = selectedProfile;
+            this.mainWindow = mainWindow;
             config = ConfigManager.LoadProfileConfig();
 
             Owner = Application.Current.MainWindow;
@@ -24,24 +24,22 @@ namespace swiftKEY_V2
             ShowInTaskbar = false;
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
-            txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Name;
-            label_buttonAction.Content = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Title;
+            txt_ProfileName.Text = config.ProfileConfigurations[selectedProfile].Name;
+            label_profileTitle.Content = config.ProfileConfigurations[selectedProfile].Title;
         }
 
-        private void ButtonName_TextChanged(object sender, RoutedEventArgs e)
+        private void ProfileName_TextChanged(object sender, RoutedEventArgs e)
         {
             config = ConfigManager.LoadProfileConfig();
-            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
+            config.ProfileConfigurations[selectedProfile].Name = txt_ProfileName.Text;
             ConfigManager.SaveConfig(config);
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             config = ConfigManager.LoadProfileConfig();
-            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
-            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = "";
-            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "";
-            ConfigManager.SaveConfig(config);
+            ConfigManager.RemoveProfile(config.ProfileConfigurations[selectedProfile].Title, mainWindow);
+            MainWindow.SetSelectedProfile(0);
 
             if (closingInProgress)
                 return;
@@ -55,8 +53,8 @@ namespace swiftKEY_V2
             if (closingInProgress)
                 return;
 
-            if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
+            if (txt_ProfileName.Text.Length == 0)
+                txt_ProfileName.Text = config.ProfileConfigurations[selectedProfile].Title;
 
             Close();
         }
@@ -68,8 +66,8 @@ namespace swiftKEY_V2
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
+            if (txt_ProfileName.Text.Length == 0)
+                txt_ProfileName.Text = config.ProfileConfigurations[selectedProfile].Title;
 
             Close();
         }

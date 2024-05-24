@@ -156,11 +156,17 @@
     <Compile Include="Windows\OpenWebsiteSettingsWindow.xaml.cs">
       <DependentUpon>OpenWebsiteSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ProfileSettingsWindow.xaml.cs">
+      <DependentUpon>ProfileSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SpotifySettingsWindow.xaml.cs">
       <DependentUpon>SpotifySettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SpotifyVolumeSettingsWindow.xaml.cs">
       <DependentUpon>SpotifyVolumeSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SwitchProfileSettingsWindow.xaml.cs">
+      <DependentUpon>SwitchProfileSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\VolumeSettingsWindow.xaml.cs">
       <DependentUpon>VolumeSettingsWindow.xaml</DependentUpon>
@@ -203,11 +209,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\ProfileSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\SpotifySettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\SpotifyVolumeSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SwitchProfileSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,5 +1,4 @@
-﻿using swiftKEY_V2.Utils;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows;
 
@@ -7,16 +6,12 @@ namespace swiftKEY_V2
 {
     public partial class SpotifySettingsWindow : Window
     {
-        private ButtonConfig config;
         private SpotifyConfig spotifyConfig;
-        private int btnIndex;
         private bool closingInProgress = false;
 
-        public SpotifySettingsWindow(int pressedBtnIndex)
+        public SpotifySettingsWindow()
         {
             InitializeComponent();
-            btnIndex = pressedBtnIndex;
-            config = ConfigManager.LoadConfig();
             spotifyConfig = ConfigManager.LoadSpotifyConfig();
 
             Owner = Application.Current.MainWindow;

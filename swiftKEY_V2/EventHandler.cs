@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using SpotifyAPI.Web;
 using System.Threading.Tasks;
-using System.Security.Policy;
+using System.Linq;
 
 namespace swiftKEY_V2
 {
@@ -27,9 +27,11 @@ namespace swiftKEY_V2
         public static extern void LockWorkStation();
 
         private static EventHandler eventHandler = new EventHandler();
+        private SpotifyConfig spotifyConfig;
+        private static int _selectedProfile;
         #endregion
 
-        public async static void FetchFunction(string data)
+        public async static void FetchFunction(string data, MainWindow mainWindow)
         {
             if (data.Contains("hotkey_"))
             {
@@ -352,6 +354,19 @@ namespace swiftKEY_V2
                 await spotify.Player.SetShuffle(new PlayerShuffleRequest(!shuffleMode));
                 #endregion
             }
+            else if (data.Contains("switchprofile_"))
+            {
+                #region Switch Profile
+                int profileIndex = int.Parse(data.Replace("switchprofile_", ""));
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MainWindow.SetSelectedProfile(profileIndex);
+                    mainWindow.LoadButtonText();
+                    mainWindow.UpdateProfiles();
+                });
+                #endregion
+            }
         }
 
         #region Shutdown / Restart / Lock
@@ -374,6 +389,16 @@ namespace swiftKEY_V2
         #region Spotify isLoggedIn
         private async Task<bool> isLoggedIn()
         {
+            spotifyConfig = ConfigManager.LoadSpotifyConfig();
+
+            string _clientId = spotifyConfig.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientID").Value;
+            string _clientSecret = spotifyConfig.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "ClientSecret").Value;
+            string _redirectUri = spotifyConfig.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "RedirectUri").Value;
+            string _refreshToken = spotifyConfig.SpotifyConfigurations.FirstOrDefault(entry => entry.Title == "RefreshToken").Value;
+
+            if (_clientId == "" || _clientSecret == "" || _redirectUri == "" || _refreshToken == "")
+                return false;
+
             if (string.IsNullOrEmpty(await MainWindow.spotifyAuth.GetAccessTokenAsync()))
                 return false;
 

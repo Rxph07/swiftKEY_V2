@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -40,8 +38,8 @@ namespace swiftKEY_V2.Utils
                 }
                 else
                 {
-                    // Refresh Token ist ungültig, ein neues wird angefordert
-                    // TODO
+                    // Refresh Token ist ungültig
+                    // TODO: ein neues wird angefordert
                 }
             }
             else

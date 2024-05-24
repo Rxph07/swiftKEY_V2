@@ -1,30 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace swiftKEY_V2
 {
     public partial class DefaultSpotifySettingsWindow : Window
     {
-        private ButtonConfig config;
+        private ProfileConfig config;
         private int btnIndex;
+        private int selectedProfile;
         private bool closingInProgress = false;
 
-        public DefaultSpotifySettingsWindow(int pressedBtnIndex)
+        public DefaultSpotifySettingsWindow(int pressedBtnIndex, int selectedProfile)
         {
             InitializeComponent();
+            this.selectedProfile = selectedProfile;
             btnIndex = pressedBtnIndex;
-            config = ConfigManager.LoadConfig();
+            config = ConfigManager.LoadProfileConfig();
 
             Owner = Application.Current.MainWindow;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -33,30 +24,30 @@ namespace swiftKEY_V2
             ShowInTaskbar = false;
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
-            txt_ButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
-            label_buttonAction.Content = config.ButtonConfigurations[pressedBtnIndex].Title;
+            txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Name;
+            label_buttonAction.Content = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Title;
         }
 
         private void ButtonName_TextChanged(object sender, RoutedEventArgs e)
         {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
+            config = ConfigManager.LoadProfileConfig();
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
             ConfigManager.SaveConfig(config);
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            SpotifySettingsWindow spotifySettingsWindow = new SpotifySettingsWindow(btnIndex);
+            SpotifySettingsWindow spotifySettingsWindow = new SpotifySettingsWindow();
             spotifySettingsWindow.ShowDialog();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
-            config.ButtonConfigurations[btnIndex].Name = "";
-            config.ButtonConfigurations[btnIndex].Function = "";
+            config = ConfigManager.LoadProfileConfig();
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = "";
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "";
             ConfigManager.SaveConfig(config);
 
             if (closingInProgress)
@@ -72,7 +63,7 @@ namespace swiftKEY_V2
                 return;
 
             if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
 
             Close();
         }
@@ -85,7 +76,7 @@ namespace swiftKEY_V2
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
 
             Close();
         }

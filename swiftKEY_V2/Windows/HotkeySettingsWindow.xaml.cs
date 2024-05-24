@@ -9,12 +9,13 @@ namespace swiftKEY_V2
 {
     public partial class HotkeySettingsWindow : Window
     {
-        private ButtonConfig config;
+        private ProfileConfig config;
         private Button currentButton;
 
         private string hotkey = "";
         private int hotkeyCode = -1;
         private int btnIndex;
+        private int selectedProfile;
 
         private bool closingInProgress = false;
         private bool isShiftPressed = false;
@@ -28,13 +29,14 @@ namespace swiftKEY_V2
         private static IntPtr _hookID = IntPtr.Zero;
         private static HotkeySettingsWindow _currentInstance;
 
-        public HotkeySettingsWindow(int pressedBtnIndex)
+        public HotkeySettingsWindow(int pressedBtnIndex, int selectedProfile)
         {
             InitializeComponent();
             _currentInstance = this;
             _proc = HookCallback;
             btnIndex = pressedBtnIndex;
-            config = ConfigManager.LoadConfig();
+            this.selectedProfile = selectedProfile;
+            config = ConfigManager.LoadProfileConfig();
 
             Owner = Application.Current.MainWindow;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -43,8 +45,8 @@ namespace swiftKEY_V2
             ShowInTaskbar = false;
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
-            txt_ButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
-            label_buttonAction.Content = config.ButtonConfigurations[pressedBtnIndex].Title;
+            txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Name;
+            label_buttonAction.Content = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Title;
             Loaded += HotkeySettingsWindow_Loaded;
 
             for (int i = 1; i < 25; i++)
@@ -55,17 +57,17 @@ namespace swiftKEY_V2
 
         private void ButtonName_TextChanged(object sender, RoutedEventArgs e)
         {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
+            config = ConfigManager.LoadProfileConfig();
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
             ConfigManager.SaveConfig(config);
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
-            config.ButtonConfigurations[btnIndex].Name = "";
-            config.ButtonConfigurations[btnIndex].Function = "";
+            config = ConfigManager.LoadProfileConfig();
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = "";
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "";
             ConfigManager.SaveConfig(config);
 
             if (closingInProgress)
@@ -82,7 +84,7 @@ namespace swiftKEY_V2
                 if (currentButton != null)
                 {
                     currentButton.Content = cb_chooseHotkey.SelectedItem.ToString();
-                    config.ButtonConfigurations[btnIndex].Function = "hotkey_" + GetFKeyCode(cb_chooseHotkey.SelectedItem.ToString());
+                    config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "hotkey_" + GetFKeyCode(cb_chooseHotkey.SelectedItem.ToString());
                     ConfigManager.SaveConfig(config);
                     currentButton = null;
                 }
@@ -183,8 +185,8 @@ namespace swiftKEY_V2
         }
         private string BuildKeyString()
         {
-            config = ConfigManager.LoadConfig();
-            string[] splitFunction = config.ButtonConfigurations[btnIndex].Function.Split('_');
+            config = ConfigManager.LoadProfileConfig();
+            string[] splitFunction = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function.Split('_');
             StringBuilder builder = new StringBuilder();
 
             for(int i = 1; i < splitFunction.Length; i++)
@@ -216,7 +218,7 @@ namespace swiftKEY_V2
             }
 
             currentButton = null;
-            config.ButtonConfigurations[btnIndex].Function = hotkey;
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = hotkey;
             ConfigManager.SaveConfig(config);
             UnhookWindowsHookEx(_hookID);
         }
@@ -301,7 +303,7 @@ namespace swiftKEY_V2
                 return;
 
             if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
 
             Close();
         }
@@ -314,7 +316,7 @@ namespace swiftKEY_V2
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
 
             Close();
         }

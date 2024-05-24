@@ -6,19 +6,20 @@ namespace swiftKEY_V2
 {
     public partial class OpenFileSettingsWindow : Window
     {
-        private ButtonConfig config;
+        private ProfileConfig config;
 
         private int btnIndex;
+        private int selectedProfile;
 
         private bool closingInProgress = false;
         private bool choosingPath = false;
         private bool openFolder;
 
-        public OpenFileSettingsWindow(int pressedBtnIndex)
+        public OpenFileSettingsWindow(int pressedBtnIndex, int selectedProfile)
         {
             InitializeComponent();
             btnIndex = pressedBtnIndex;
-            config = ConfigManager.LoadConfig();
+            config = ConfigManager.LoadProfileConfig();
 
             Owner = Application.Current.MainWindow;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -27,32 +28,32 @@ namespace swiftKEY_V2
             ShowInTaskbar = false;
             Deactivated += ModalWindow_Deactivated;
             Closing += ModalWindow_Closing;
-            txt_ButtonName.Text = config.ButtonConfigurations[pressedBtnIndex].Name;
-            if (config.ButtonConfigurations[pressedBtnIndex].Function == "openfile"
-                || config.ButtonConfigurations[pressedBtnIndex].Function.Contains("openfile_"))
+            txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Name;
+            if (config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function == "openfile"
+                || config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function.Contains("openfile_"))
             {
                 openFolder = false;
-                if(config.ButtonConfigurations[pressedBtnIndex].Function == "openfile")
+                if(config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function == "openfile")
                     txt_FilePath.Text = "Keine Datei gewählt.";
                 else
-                    txt_FilePath.Text = config.ButtonConfigurations[pressedBtnIndex].Function.Replace("openfile_", "");
+                    txt_FilePath.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function.Replace("openfile_", "");
             }
-            else if (config.ButtonConfigurations[pressedBtnIndex].Function == "openfolder"
-                || config.ButtonConfigurations[pressedBtnIndex].Function.Contains("openfolder_"))
+            else if (config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function == "openfolder"
+                || config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function.Contains("openfolder_"))
             {
                 openFolder = true;
-                if (config.ButtonConfigurations[pressedBtnIndex].Function == "openfolder")
+                if (config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function == "openfolder")
                     txt_FilePath.Text = "Kein Ordner gewählt.";
                 else
-                    txt_FilePath.Text = config.ButtonConfigurations[pressedBtnIndex].Function.Replace("openfolder_", "");
+                    txt_FilePath.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function.Replace("openfolder_", "");
             }
-            label_buttonAction.Content = config.ButtonConfigurations[pressedBtnIndex].Title;
+            label_buttonAction.Content = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Title;
         }
 
         private void ButtonName_TextChanged(object sender, RoutedEventArgs e)
         {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
+            config = ConfigManager.LoadProfileConfig();
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
             ConfigManager.SaveConfig(config);
         }
 
@@ -70,8 +71,8 @@ namespace swiftKEY_V2
                     if (result == true)
                     {
                         txt_FilePath.Text = folderDialog.SelectedPath;
-                        config = ConfigManager.LoadConfig();
-                        config.ButtonConfigurations[btnIndex].Function = "openfolder_" + folderDialog.SelectedPath;
+                        config = ConfigManager.LoadProfileConfig();
+                        config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "openfolder_" + folderDialog.SelectedPath;
                         ConfigManager.SaveConfig(config);
                     }
                 }
@@ -85,8 +86,8 @@ namespace swiftKEY_V2
                     {
                         txt_FilePath.Text = fileDialog.FileName;
 
-                        config = ConfigManager.LoadConfig();
-                        config.ButtonConfigurations[btnIndex].Function = "openfile_" + fileDialog.FileName;
+                        config = ConfigManager.LoadProfileConfig();
+                        config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "openfile_" + fileDialog.FileName;
                         ConfigManager.SaveConfig(config);
                     }
                 }
@@ -96,10 +97,10 @@ namespace swiftKEY_V2
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            config = ConfigManager.LoadConfig();
-            config.ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
-            config.ButtonConfigurations[btnIndex].Name = "";
-            config.ButtonConfigurations[btnIndex].Function = "";
+            config = ConfigManager.LoadProfileConfig();
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title = "Button" + (btnIndex + 1);
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = "";
+            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "";
             ConfigManager.SaveConfig(config);
 
             if (closingInProgress)
@@ -121,7 +122,7 @@ namespace swiftKEY_V2
                 return;
 
             if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
 
             Close();
         }
@@ -137,7 +138,7 @@ namespace swiftKEY_V2
                 return;
 
             if (txt_ButtonName.Text.Length == 0)
-                txt_ButtonName.Text = config.ButtonConfigurations[btnIndex].Title;
+                txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Title;
 
             Close();
         }

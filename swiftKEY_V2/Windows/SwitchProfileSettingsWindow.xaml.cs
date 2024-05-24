@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace swiftKEY_V2
 {
-    public partial class SpotifyVolumeSettingsWindow : Window
+    public partial class SwitchProfileSettingsWindow : Window
     {
         private ProfileConfig config;
         private int btnIndex;
         private int selectedProfile;
         private bool closingInProgress = false;
 
-        public SpotifyVolumeSettingsWindow(int pressedBtnIndex, int selectedProfile)
+        public SwitchProfileSettingsWindow(int pressedBtnIndex, int selectedProfile)
         {
             InitializeComponent();
             btnIndex = pressedBtnIndex;
@@ -26,10 +27,36 @@ namespace swiftKEY_V2
             Closing += ModalWindow_Closing;
             txt_ButtonName.Text = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Name;
             label_buttonAction.Content = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Title;
-            string[] splitFunction = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function.Split('_');
-            if (splitFunction.Length > 1)
-                slider_VolumeChange.Value = double.Parse(splitFunction[1]);
-            else slider_VolumeChange.Value = 0;
+
+            string function = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[pressedBtnIndex].Function;
+            cb_Profiles.SelectedIndex = int.Parse(function.Replace("switchprofile_", ""));
+            UpdateProfiles();
+        }
+
+        private void UpdateProfiles()
+        {
+            config = ConfigManager.LoadProfileConfig();
+            cb_Profiles.Items.Clear();
+
+            for (int i = 0; i < config.ProfileConfigurations.Count; i++)
+            {
+                cb_Profiles.Items.Add(config.ProfileConfigurations[i].Name);
+            }
+        }
+
+        private void cb_Profiles_DropDownOpened(object sender, EventArgs e)
+        {
+            UpdateProfiles();
+        }
+
+        private void cb_Profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cb_Profiles.SelectedItem != null)
+            {
+                config = ConfigManager.LoadProfileConfig();
+                config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = "switchprofile_" + cb_Profiles.SelectedIndex;
+                ConfigManager.SaveConfig(config);
+            }
         }
 
         private void ButtonName_TextChanged(object sender, RoutedEventArgs e)
@@ -37,21 +64,6 @@ namespace swiftKEY_V2
             config = ConfigManager.LoadProfileConfig();
             config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Name = txt_ButtonName.Text;
             ConfigManager.SaveConfig(config);
-        }
-
-        private void VolumeChange_ValueChanged(object sender, RoutedEventArgs e)
-        {
-            config = ConfigManager.LoadProfileConfig();
-            string[] splitFunction = config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function.Split('_');
-            config.ProfileConfigurations[selectedProfile].ButtonConfigurations[btnIndex].Function = splitFunction[0] + "_" + slider_VolumeChange.Value;
-            ConfigManager.SaveConfig(config);
-        }
-
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-            SpotifySettingsWindow spotifySettingsWindow = new SpotifySettingsWindow();
-            spotifySettingsWindow.ShowDialog();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
